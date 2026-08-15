@@ -2,1616 +2,895 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Missão Supermercado — Aprenda Matemática Brincando</title>
-<meta name="theme-color" content="#2d6a4f">
-<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTWlzc8OjbyBTdXBlcm1lcmNhZG8iLCJzaG9ydF9uYW1lIjoiU3VwZXJtZXJjYWRvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzJkNmE0ZiIsInRoZW1lX2NvbG9yIjoiIzJkNmE0ZiJ9">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitoramento AEE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --verde-fundo:#2d6a4f;
-  --verde-escuro:#1b4332;
-  --laranja:#ff9f1c;
-  --laranja-escuro:#e8890c;
-  --amarelo:#ffd23f;
-  --azul:#3a86ff;
-  --vermelho:#ef4444;
-  --branco:#fffaf0;
-  --creme:#fff3e0;
-  --texto-escuro:#1b3a2f;
-  --sombra:0 6px 0 rgba(0,0,0,0.22);
-  --radius:20px;
-  --font-display:'Baloo 2', 'Fredoka', sans-serif;
-  --font-body:'Nunito', sans-serif;
-}
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap');
+  :root{
+    --bg:#EEF1E9;
+    --bg-alt:#E3E7DA;
+    --ink:#1D2A26;
+    --primary:#2F5D5A;
+    --primary-dark:#1F3E3C;
+    --accent:#D9A441;
+    --accent-2:#B5533C;
+    --card:#FFFFFF;
+    --border:#D6D9C9;
+    --muted:#5C6A62;
+    --danger:#B5533C;
+    --radius:10px;
+    --shadow:0 2px 10px rgba(29,42,38,0.06), 0 1px 2px rgba(29,42,38,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em;}
+  button{font-family:inherit; cursor:pointer;}
+  input,select,textarea{font-family:inherit;}
+  a{color:inherit;}
 
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none;}
-html,body{margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#0b2d22; font-family:var(--font-body); touch-action:none; overscroll-behavior:none;}
-#game-canvas{position:fixed; inset:0; width:100%; height:100%; display:block; outline:none;}
+  /* ---------- LOGIN ---------- */
+  #login-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(217,164,65,0.10), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(47,93,90,0.10), transparent 45%),
+      var(--bg);
+  }
+  .login-wrap{
+    width:100%;
+    max-width:920px;
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    background:var(--card);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .login-side{
+    background:linear-gradient(165deg, var(--primary-dark), var(--primary) 70%);
+    color:#F3F1E6;
+    padding:44px 38px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:relative;
+  }
+  .login-side::before{
+    content:"";
+    position:absolute;
+    top:0; right:0; bottom:0;
+    width:14px;
+    background:repeating-linear-gradient(180deg, var(--accent) 0 26px, transparent 26px 40px);
+    opacity:0.55;
+  }
+  .brand-eyebrow{
+    text-transform:uppercase;
+    font-size:11.5px;
+    letter-spacing:0.14em;
+    color:var(--accent);
+    font-family:'IBM Plex Mono', monospace;
+    margin-bottom:10px;
+  }
+  .login-side h1{font-size:32px; color:#fff; line-height:1.15; max-width:280px;}
+  .login-side p{font-size:14.5px; line-height:1.6; color:#DCE3D6; max-width:300px; margin-top:14px;}
+  .login-tabbook{display:flex; flex-direction:column; gap:8px; margin-top:28px;}
+  .tabbook-item{
+    display:flex; align-items:center; gap:10px;
+    font-size:12.5px; color:#CBD6C4;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .tabbook-dot{width:7px; height:7px; border-radius:2px; background:var(--accent); flex-shrink:0;}
 
-button{font-family:var(--font-display); cursor:pointer; border:none;}
-.btn{
-  font-size:22px; font-weight:700; color:#fff; padding:16px 34px; border-radius:999px;
-  background:linear-gradient(180deg, var(--laranja), var(--laranja-escuro));
-  box-shadow:0 6px 0 #b85e00, 0 10px 20px rgba(0,0,0,.25);
-  transition:transform .08s ease, box-shadow .08s ease; letter-spacing:.3px;
-}
-.btn:active{transform:translateY(5px); box-shadow:0 1px 0 #b85e00, 0 4px 10px rgba(0,0,0,.2);}
-.btn.secondary{background:linear-gradient(180deg,#ffffff,#eee); color:var(--texto-escuro); box-shadow:0 6px 0 #c9c2b4, 0 10px 20px rgba(0,0,0,.2);}
-.btn.secondary:active{box-shadow:0 1px 0 #c9c2b4;}
-.btn.big{font-size:26px; padding:20px 48px;}
-.btn.small{font-size:16px; padding:10px 20px; border-radius:14px;}
+  .login-form-side{padding:44px 38px; display:flex; flex-direction:column;}
+  .role-tabs{display:flex; gap:0; border-bottom:1px solid var(--border); margin-bottom:26px;}
+  .role-tab{
+    flex:1; padding:11px 6px; text-align:center;
+    font-size:13px; font-weight:600; color:var(--muted);
+    background:none; border:none; border-bottom:2.5px solid transparent;
+    transition:all .15s;
+  }
+  .role-tab.active{color:var(--primary-dark); border-bottom-color:var(--accent);}
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block; font-size:12px; font-weight:600; color:var(--muted);
+    text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;
+  }
+  .field input, .field select, .field textarea{
+    width:100%; padding:11px 13px; border:1.5px solid var(--border);
+    border-radius:8px; font-size:14.5px; background:#FBFAF6; color:var(--ink);
+    transition:border-color .15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none; border-color:var(--primary);
+    background:#fff;
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:12px 20px; border-radius:8px; border:none;
+    font-size:14.5px; font-weight:600;
+    transition:filter .15s, transform .05s;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--primary); color:#fff;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-accent{background:var(--accent); color:#3A2A0A;}
+  .btn-accent:hover{filter:brightness(1.06);}
+  .btn-ghost{background:transparent; color:var(--primary-dark); border:1.5px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--primary);}
+  .btn-danger{background:#fff; color:var(--danger); border:1.5px solid #E9C9C0;}
+  .btn-danger:hover{background:#FBF0EC;}
+  .btn-block{width:100%;}
+  .btn-sm{padding:8px 12px; font-size:13px;}
+  .login-error{
+    background:#FBEDE9; color:var(--danger); border:1px solid #EFC9BC;
+    padding:10px 13px; border-radius:8px; font-size:13px; margin-bottom:16px;
+  }
+  .login-hint{
+    margin-top:auto; padding-top:18px; font-size:12px; color:var(--muted);
+    font-family:'IBM Plex Mono', monospace; line-height:1.7;
+    border-top:1px dashed var(--border);
+  }
 
-/* ---------- TELA INICIAL ---------- */
-#start-screen{
-  position:fixed; inset:0; z-index:50; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
-  background:
-    radial-gradient(1200px 700px at 50% -10%, #3f8f6c 0%, transparent 60%),
-    linear-gradient(180deg, var(--verde-fundo) 0%, var(--verde-escuro) 100%);
-  color:var(--branco); padding:24px;
-}
-.start-emoji{font-size:64px; filter:drop-shadow(0 8px 10px rgba(0,0,0,.3)); animation:float 3s ease-in-out infinite;}
-@keyframes float{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-14px) rotate(3deg);}}
-#start-screen h1{font-family:var(--font-display); font-size:clamp(32px,7vw,58px); margin:10px 0 4px; text-shadow:0 4px 0 rgba(0,0,0,.25);}
-#start-screen .sub{font-size:clamp(15px,3vw,20px); font-weight:700; color:var(--amarelo); margin-bottom:30px;}
-.start-buttons{display:flex; flex-direction:column; gap:14px; width:min(320px,80vw);}
+  /* ---------- APP SHELL ---------- */
+  #app-screen{display:none; min-height:100vh;}
+  .app-shell{display:grid; grid-template-columns:250px 1fr; min-height:100vh;}
+  .sidebar{
+    background:var(--primary-dark); color:#EFEDE0;
+    padding:26px 20px; display:flex; flex-direction:column;
+  }
+  .sidebar-brand{margin-bottom:6px;}
+  .sidebar-brand h2{color:#fff; font-size:20px;}
+  .sidebar-brand .mono{font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em;}
+  .sidebar-user{
+    margin:18px 0 22px; padding:12px 14px; background:rgba(255,255,255,0.06);
+    border-radius:9px; font-size:13px;
+  }
+  .sidebar-user .name{font-weight:600; font-size:14px; color:#fff;}
+  .sidebar-user .role{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--accent); margin-top:2px;}
+  .sidebar-user .meta{color:#B9C4B2; font-size:12px; margin-top:6px; line-height:1.5;}
+  .nav-item{
+    display:flex; align-items:center; gap:10px;
+    padding:11px 13px; border-radius:8px; font-size:14px; font-weight:500;
+    color:#CBD6C4; background:none; border:none; text-align:left; width:100%;
+    margin-bottom:3px; transition:background .12s;
+  }
+  .nav-item:hover{background:rgba(255,255,255,0.06);}
+  .nav-item.active{background:var(--accent); color:#3A2A0A; font-weight:600;}
+  .sidebar-bottom{margin-top:auto; padding-top:16px; border-top:1px dashed rgba(255,255,255,0.14);}
+  .logout-btn{
+    width:100%; padding:10px 12px; background:none; border:1.5px solid rgba(255,255,255,0.2);
+    color:#EFEDE0; border-radius:8px; font-size:13px; font-weight:600;
+  }
+  .logout-btn:hover{border-color:var(--accent); color:var(--accent);}
 
-/* ---------- TUTORIAL / MODAIS GENÉRICOS ---------- */
-.modal-overlay{position:fixed; inset:0; z-index:80; background:rgba(10,20,15,.72); display:none; align-items:center; justify-content:center; padding:20px;}
-.modal-overlay.show{display:flex;}
-.modal-card{
-  background:var(--creme); color:var(--texto-escuro); border-radius:28px; max-width:520px; width:100%;
-  padding:28px 26px; box-shadow:0 20px 50px rgba(0,0,0,.4); max-height:88vh; overflow-y:auto;
-  border:6px solid #fff;
-}
-.modal-card h2{font-family:var(--font-display); font-size:26px; margin:0 0 14px; color:var(--verde-escuro); text-align:center;}
-.modal-card .close-x{position:sticky; top:0; float:right; background:none; font-size:22px; color:#999; margin:-6px -6px 0 0;}
-.tuto-block{display:flex; align-items:center; gap:14px; background:#fff; border-radius:16px; padding:12px 14px; margin-bottom:10px; font-weight:700;}
-.tuto-block .k{background:var(--verde-fundo); color:#fff; padding:6px 12px; border-radius:10px; font-family:var(--font-display); min-width:70px; text-align:center; font-size:14px;}
-.tuto-flow{text-align:center; font-family:var(--font-display); font-size:15px; color:var(--verde-escuro); line-height:2; margin-top:16px; font-weight:700;}
+  .main{padding:34px 40px; max-width:1180px;}
+  .main-header{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px;}
+  .main-header h1{font-size:27px;}
+  .main-header .sub{color:var(--muted); font-size:14px; margin-top:4px;}
 
-/* ---------- ORIENTAÇÃO ---------- */
-#orientation-overlay{position:fixed; inset:0; z-index:200; background:var(--verde-escuro); color:#fff; display:none; align-items:center; justify-content:center; flex-direction:column; text-align:center;}
-#orientation-overlay .icon{font-size:70px; animation:rotatePhone 1.6s ease-in-out infinite;}
-@keyframes rotatePhone{0%,100%{transform:rotate(0deg);}50%{transform:rotate(90deg);}}
-#orientation-overlay h2{font-family:var(--font-display); font-size:26px; margin:14px 0 6px;}
-@media (max-width:900px) and (orientation:portrait){
-  #orientation-overlay.mobile-active{display:flex;}
-}
+  .cards-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:30px;}
+  .stat-card{
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:18px 20px; box-shadow:var(--shadow);
+  }
+  .stat-card .num{font-family:'Fraunces', serif; font-size:30px; font-weight:600; color:var(--primary-dark);}
+  .stat-card .label{font-size:12.5px; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.04em;}
 
-/* ---------- HUD ---------- */
-#hud{position:fixed; top:0; left:0; right:0; z-index:20; display:flex; justify-content:space-between; align-items:flex-start; padding:12px; pointer-events:none; font-family:var(--font-display);}
-.hud-pill{
-  pointer-events:auto; display:flex; align-items:center; gap:8px; background:rgba(15,40,30,.72); backdrop-filter:blur(6px);
-  color:#fff; padding:8px 16px; border-radius:16px; font-weight:700; font-size:17px; box-shadow:0 4px 12px rgba(0,0,0,.25); border:2px solid rgba(255,255,255,.15);
-}
-.hud-left{display:flex; flex-direction:column; gap:8px;}
-.hud-right{display:flex; flex-direction:column; align-items:flex-end; gap:8px;}
-.hud-pill.money{color:var(--amarelo);}
-#mission-pill{cursor:pointer; pointer-events:auto;}
-#mission-bar-wrap{width:100%; height:6px; background:rgba(255,255,255,.25); border-radius:6px; margin-top:4px; overflow:hidden;}
-#mission-bar{height:100%; width:0%; background:var(--amarelo); transition:width .3s ease;}
-.icon-btn{pointer-events:auto; width:44px; height:44px; border-radius:14px; background:rgba(15,40,30,.72); color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center; border:2px solid rgba(255,255,255,.15); box-shadow:0 4px 10px rgba(0,0,0,.2);}
-.hud-bottom-hint{position:fixed; bottom:10px; left:50%; transform:translateX(-50%); z-index:15; color:rgba(255,255,255,.85); font-weight:700; font-size:13px; background:rgba(0,0,0,.35); padding:6px 14px; border-radius:12px; pointer-events:none; text-align:center;}
+  .panel{
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    box-shadow:var(--shadow); padding:26px 26px; margin-bottom:24px;
+  }
+  .panel-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px;}
+  .panel-head h3{font-size:17px;}
+  .panel-head .count{font-size:12px; color:var(--muted); font-family:'IBM Plex Mono', monospace;}
 
-/* ---------- PROMPT DE INTERAÇÃO ---------- */
-#interact-prompt{
-  position:fixed; bottom:130px; left:50%; transform:translateX(-50%) translateY(20px); z-index:25;
-  background:#fff; color:var(--texto-escuro); padding:10px 20px; border-radius:16px; font-family:var(--font-display); font-weight:700; font-size:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,.35); opacity:0; transition:all .18s ease; pointer-events:none; text-align:center; border:3px solid var(--laranja); white-space:nowrap;
-}
-#interact-prompt.show{opacity:1; transform:translateX(-50%) translateY(0);}
-#interact-prompt .price{color:var(--laranja-escuro); margin-left:6px;}
+  .empty-state{
+    padding:34px 20px; text-align:center; color:var(--muted); font-size:14px;
+    border:1.5px dashed var(--border); border-radius:10px;
+  }
 
-/* ---------- MINIMAPA ---------- */
-#minimap-wrap{position:fixed; top:100px; right:12px; z-index:20; border-radius:16px; overflow:hidden; border:3px solid rgba(255,255,255,.5); box-shadow:0 6px 16px rgba(0,0,0,.35); background:rgba(20,50,35,.6); pointer-events:none;}
-#minimap{display:block;}
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  th{
+    text-align:left; padding:9px 10px; font-size:11px; text-transform:uppercase;
+    letter-spacing:0.05em; color:var(--muted); border-bottom:1.5px solid var(--border);
+    font-family:'IBM Plex Mono', monospace; font-weight:500;
+  }
+  td{padding:11px 10px; border-bottom:1px solid var(--bg-alt); vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  .tag{
+    display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px;
+    font-weight:600; font-family:'IBM Plex Mono', monospace;
+  }
+  .tag-aee{background:#E4EEE4; color:var(--primary-dark);}
+  .tag-regente{background:#FBEFE0; color:#8A5B14;}
+  .tag-pedagogo{background:#F3E4E0; color:var(--accent-2);}
 
-/* ---------- CONTROLES MOBILE ---------- */
-#joystick-zone{position:fixed; left:22px; bottom:22px; width:130px; height:130px; z-index:30; display:none; touch-action:none;}
-#joystick-base{position:absolute; inset:0; border-radius:50%; background:rgba(255,255,255,.18); border:3px solid rgba(255,255,255,.4);}
-#joystick-stick{position:absolute; width:56px; height:56px; border-radius:50%; background:rgba(255,159,28,.85); border:3px solid #fff; left:37px; top:37px; box-shadow:0 4px 10px rgba(0,0,0,.3);}
-#camera-touch-zone{position:fixed; right:0; top:0; width:55%; height:70%; z-index:5; display:none; touch-action:none;}
-#interact-btn-mobile{
-  position:fixed; right:24px; bottom:26px; z-index:30; display:none; width:92px; height:92px; border-radius:50%;
-  background:radial-gradient(circle at 35% 30%, #ffd23f, #ff9f1c); color:#5a3300; font-family:var(--font-display); font-weight:800;
-  font-size:13px; text-align:center; line-height:1.15; box-shadow:0 8px 0 #b85e00, 0 12px 24px rgba(0,0,0,.35); border:3px solid #fff;
-  align-items:center; justify-content:center; padding:4px; flex-direction:column;
-}
-#interact-btn-mobile:active{transform:translateY(6px); box-shadow:0 2px 0 #b85e00;}
-#cart-btn-mobile{position:fixed; right:24px; bottom:130px; z-index:29; display:none; width:56px; height:56px; border-radius:50%; background:#fff; box-shadow:0 6px 0 #c9c2b4, 0 10px 20px rgba(0,0,0,.25); font-size:24px; align-items:center; justify-content:center;}
-.cart-badge{position:absolute; top:-6px; right:-6px; background:var(--vermelho); color:#fff; font-size:11px; font-weight:800; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; border:2px solid #fff;}
+  .row-actions{display:flex; gap:8px;}
 
-/* ---------- CARRINHO PAINEL ---------- */
-#cart-panel{position:fixed; top:0; right:0; bottom:0; width:min(340px,88vw); background:var(--creme); z-index:60; transform:translateX(100%); transition:transform .25s ease; box-shadow:-8px 0 24px rgba(0,0,0,.3); display:flex; flex-direction:column; padding:20px;}
-#cart-panel.show{transform:translateX(0);}
-#cart-panel h2{font-family:var(--font-display); color:var(--verde-escuro); margin:6px 0 14px;}
-#cart-list{flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px;}
-.cart-item{display:flex; justify-content:space-between; align-items:center; background:#fff; padding:10px 14px; border-radius:12px; font-weight:700; color:var(--texto-escuro);}
-.cart-item .rm{color:var(--vermelho); font-size:20px; padding:0 6px;}
-#cart-total{font-family:var(--font-display); font-size:22px; text-align:center; padding:16px 0 6px; color:var(--verde-escuro); font-weight:800;}
-#cart-empty{text-align:center; color:#888; font-weight:700; margin-top:40px;}
+  .folder-list{display:flex; flex-direction:column; gap:10px;}
+  .folder-item{
+    display:flex; align-items:center; gap:14px;
+    border:1.5px solid var(--border); border-radius:9px;
+    padding:14px 16px; position:relative; background:#FCFBF7;
+  }
+  .folder-item::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:5px;
+    background:var(--accent); border-radius:9px 0 0 9px;
+  }
+  .folder-week{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--primary-dark);
+    background:#E4EEE4; padding:5px 10px; border-radius:6px; white-space:nowrap; font-weight:600;
+  }
+  .folder-info{flex:1; min-width:0;}
+  .folder-info .title{font-weight:600; font-size:14.5px;}
+  .folder-info .desc{color:var(--muted); font-size:13px; margin-top:3px; line-height:1.5;}
+  .folder-info .meta{color:var(--muted); font-size:11.5px; margin-top:6px; font-family:'IBM Plex Mono', monospace;}
 
-/* ---------- DESAFIO MATEMÁTICO ---------- */
-#challenge-modal .modal-card{max-width:420px; text-align:center;}
-.challenge-badge{display:inline-block; background:var(--azul); color:#fff; font-weight:800; font-size:13px; padding:4px 14px; border-radius:20px; margin-bottom:10px;}
-#challenge-question{font-family:var(--font-display); font-size:38px; color:var(--verde-escuro); font-weight:800; margin:14px 0 20px;}
-#challenge-options{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-.opt-btn{background:#fff; border:3px solid #e2dccb; border-radius:16px; padding:18px 8px; font-family:var(--font-display); font-size:26px; font-weight:800; color:var(--verde-escuro); box-shadow:0 4px 0 #d8d2c0;}
-.opt-btn:active{transform:translateY(3px); box-shadow:none;}
-.opt-btn.correct{background:#d4f7dc; border-color:#3fae5a; color:#1b6b34;}
-.opt-btn.wrong{background:#fddede; border-color:#e05252; color:#a12a2a;}
-#challenge-feedback{margin-top:16px; font-weight:800; font-size:17px; min-height:26px; color:var(--verde-escuro);}
-#challenge-hint-btn{margin-top:12px; background:none; color:var(--azul); font-weight:800; text-decoration:underline; font-size:14px;}
-#challenge-hint-text{font-size:14px; color:#666; margin-top:8px; font-style:italic; display:none;}
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(29,42,38,0.45);
+    align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:#fff; border-radius:14px; padding:30px 30px; width:100%; max-width:480px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.25); max-height:90vh; overflow-y:auto;
+  }
+  .modal h3{font-size:19px; margin-bottom:4px;}
+  .modal .modal-sub{color:var(--muted); font-size:13px; margin-bottom:20px;}
+  .modal-actions{display:flex; gap:10px; margin-top:22px;}
 
-/* ---------- CAIXA / CHECKOUT ---------- */
-#checkout-modal .modal-card{max-width:440px;}
-.checkout-line{display:flex; justify-content:space-between; padding:6px 0; font-weight:700; border-bottom:1px dashed #ddd;}
-.checkout-total{display:flex; justify-content:space-between; padding-top:10px; font-family:var(--font-display); font-size:22px; font-weight:800; color:var(--laranja-escuro);}
-.wallet-line{display:flex; justify-content:space-between; padding:10px 0; font-weight:800; color:var(--verde-escuro); font-size:17px; border-top:2px solid #eee; margin-top:8px;}
+  .file-drop{
+    border:1.5px dashed var(--border); border-radius:9px; padding:16px;
+    font-size:13px; color:var(--muted); background:#FBFAF6;
+  }
+  .file-drop input[type=file]{width:100%; font-size:13px;}
+  .file-chip{
+    display:inline-flex; align-items:center; gap:8px; margin-top:8px;
+    background:#E4EEE4; color:var(--primary-dark); padding:5px 10px; border-radius:6px; font-size:12px;
+  }
 
-/* ---------- INSUFICIENTE ---------- */
-#insufficient-modal .modal-card{text-align:center;}
+  .toast{
+    position:fixed; bottom:24px; right:24px; background:var(--primary-dark); color:#fff;
+    padding:13px 18px; border-radius:9px; font-size:13.5px; box-shadow:var(--shadow);
+    z-index:100; display:none; max-width:320px;
+  }
+  .toast.show{display:block;}
 
-/* ---------- MISSÃO COMPLETA ---------- */
-#mission-complete-modal .modal-card{text-align:center; max-width:440px;}
-.stat-row{display:flex; justify-content:space-between; background:#fff; padding:10px 16px; border-radius:12px; margin:6px 0; font-weight:700;}
+  .regente-hero{
+    background:linear-gradient(120deg, var(--primary-dark), var(--primary));
+    color:#fff; border-radius:14px; padding:26px 28px; margin-bottom:26px;
+  }
+  .regente-hero .mono{color:var(--accent);}
+  .regente-hero h2{color:#fff; font-size:22px; margin-top:6px;}
+  .regente-hero .info-grid{display:flex; gap:26px; margin-top:16px; flex-wrap:wrap;}
+  .regente-hero .info-grid div .k{font-size:11px; color:#B9C4B2; text-transform:uppercase; letter-spacing:0.05em;}
+  .regente-hero .info-grid div .v{font-size:14.5px; font-weight:600; margin-top:2px;}
 
-/* ---------- TOASTS ---------- */
-#toast-container{position:fixed; top:90px; left:50%; transform:translateX(-50%); z-index:70; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none;}
-.toast{font-family:var(--font-display); font-weight:800; font-size:18px; padding:10px 20px; border-radius:16px; box-shadow:0 6px 16px rgba(0,0,0,.3); animation:toastPop .25s ease, toastOut .4s ease 1.6s forwards; white-space:nowrap;}
-.toast.money{background:var(--amarelo); color:#5a3300;}
-.toast.points{background:var(--azul); color:#fff;}
-.toast.streak{background:var(--vermelho); color:#fff;}
-.toast.info{background:#fff; color:var(--verde-escuro);}
-@keyframes toastPop{from{transform:scale(.6); opacity:0;} to{transform:scale(1); opacity:1;}}
-@keyframes toastOut{to{opacity:0; transform:translateY(-16px);}}
+  .filters-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;}
+  .filters-row select, .filters-row input{
+    padding:8px 11px; border:1.5px solid var(--border); border-radius:7px; font-size:13px; background:#FBFAF6;
+  }
 
-/* ---------- LOADING ---------- */
-#loading-screen{position:fixed; inset:0; z-index:100; background:var(--verde-escuro); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:var(--font-display);}
-#loading-screen .bar-wrap{width:min(280px,70vw); height:14px; background:rgba(255,255,255,.2); border-radius:10px; overflow:hidden; margin-top:16px;}
-#loading-bar{height:100%; width:0%; background:linear-gradient(90deg, var(--laranja), var(--amarelo)); transition:width .2s ease;}
-
-#confetti-canvas{position:fixed; inset:0; z-index:90; pointer-events:none; display:none;}
-
-@media (max-width:900px){
-  .hud-pill{font-size:14px; padding:6px 12px;}
-  .hud-bottom-hint{display:none;}
-}
+  @media (max-width:820px){
+    .app-shell{grid-template-columns:1fr;}
+    .sidebar{
+      flex-direction:row; align-items:center; padding:14px 18px; overflow-x:auto;
+    }
+    .sidebar-brand,.sidebar-user,.sidebar-bottom{display:none;}
+    .nav-item{white-space:nowrap; width:auto;}
+    .main{padding:22px 18px;}
+    .login-wrap{grid-template-columns:1fr;}
+    .login-side{display:none;}
+  }
 </style>
 </head>
 <body>
 
-<canvas id="game-canvas"></canvas>
-<canvas id="confetti-canvas"></canvas>
-
-<!-- LOADING -->
-<div id="loading-screen">
-  <div class="start-emoji">🛒</div>
-  <div style="font-size:20px;font-weight:700;">Montando o supermercado...</div>
-  <div class="bar-wrap"><div id="loading-bar"></div></div>
-</div>
-
-<!-- TELA INICIAL -->
-<div id="start-screen" style="display:none;">
-  <div class="start-emoji">🛒</div>
-  <h1>Missão Supermercado</h1>
-  <div class="sub">Aprenda matemática brincando!</div>
-  <div class="start-buttons">
-    <button class="btn big" id="btn-start">▶ Começar Jogo</button>
-    <button class="btn secondary" id="btn-howto">📚 Como Jogar</button>
-    <button class="btn secondary" id="btn-achievements">🏆 Conquistas</button>
-    <button class="btn secondary" id="btn-settings">⚙️ Configurações</button>
-  </div>
-</div>
-
-<!-- TUTORIAL -->
-<div class="modal-overlay" id="tutorial-modal">
-  <div class="modal-card">
-    <button class="close-x" data-close="tutorial-modal">✕</button>
-    <h2>Como Jogar</h2>
-    <div id="tuto-desktop">
-      <div class="tuto-block"><span class="k">W A S D</span> Andar pelo supermercado</div>
-      <div class="tuto-block"><span class="k">MOUSE</span> Clique e arraste para olhar ao redor</div>
-      <div class="tuto-block"><span class="k">E</span> Interagir (pegar, responder, pagar)</div>
+<!-- ==================== LOGIN ==================== -->
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-side">
+      <div>
+        <div class="brand-eyebrow">Escola · Rede de Apoio</div>
+        <h1>Monitoramento AEE</h1>
+        <p>Ponte semanal entre a sala regular e o Atendimento Educacional Especializado.</p>
+        <div class="login-tabbook">
+          <div class="tabbook-item"><span class="tabbook-dot"></span> Professor regente envia o conteúdo da semana</div>
+          <div class="tabbook-item"><span class="tabbook-dot"></span> Professor AEE acompanha e organiza por turma</div>
+          <div class="tabbook-item"><span class="tabbook-dot"></span> Pedagogo(a) supervisiona tudo, em toda a escola</div>
+        </div>
+      </div>
+      <div class="login-hint">v1.0 · dados salvos neste navegador</div>
     </div>
-    <div id="tuto-mobile" style="display:none;">
-      <div class="tuto-block"><span class="k">🕹️</span> Joystick no canto esquerdo para andar</div>
-      <div class="tuto-block"><span class="k">👆</span> Deslize o dedo do lado direito da tela pra olhar ao redor</div>
-      <div class="tuto-block"><span class="k">👆</span> Botão INTERAGIR para pegar, responder e pagar</div>
-    </div>
-    <div class="tuto-flow">RESOLVA CONTAS → GANHE DINHEIRO → FAÇA COMPRAS! 🎉</div>
-    <div style="text-align:center; margin-top:18px;"><button class="btn small" data-close="tutorial-modal">Entendi!</button></div>
-  </div>
-</div>
-
-<!-- CONQUISTAS -->
-<div class="modal-overlay" id="achievements-modal">
-  <div class="modal-card">
-    <button class="close-x" data-close="achievements-modal">✕</button>
-    <h2>🏆 Conquistas</h2>
-    <div id="achievements-list"></div>
-  </div>
-</div>
-
-<!-- CONFIGURAÇÕES -->
-<div class="modal-overlay" id="settings-modal">
-  <div class="modal-card">
-    <button class="close-x" data-close="settings-modal">✕</button>
-    <h2>⚙️ Configurações</h2>
-    <div class="tuto-block" style="justify-content:space-between;">
-      <span>🔊 Som</span>
-      <button class="btn small" id="toggle-sound">LIGADO</button>
-    </div>
-    <div class="tuto-block" style="justify-content:space-between;">
-      <span>🔄 Reiniciar progresso</span>
-      <button class="btn small secondary" id="btn-reset">Reiniciar</button>
+    <div class="login-form-side">
+      <div class="role-tabs" id="role-tabs">
+        <button class="role-tab active" data-role="pedagogo">Pedagogo(a)</button>
+        <button class="role-tab" data-role="aee">Professor AEE</button>
+        <button class="role-tab" data-role="regente">Professor Regente</button>
+      </div>
+      <div id="login-error" style="display:none;" class="login-error"></div>
+      <div class="field">
+        <label>Usuário</label>
+        <input type="text" id="login-user" placeholder="seu usuário" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="login-pass" placeholder="sua senha" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary btn-block" id="btn-login">Entrar</button>
+      <div class="login-hint" id="login-demo-hint"></div>
     </div>
   </div>
 </div>
 
-<!-- ORIENTAÇÃO -->
-<div id="orientation-overlay">
-  <div class="icon">📱</div>
-  <h2>GIRE O CELULAR</h2>
-  <div style="font-weight:700;">Vire seu celular para jogar melhor.</div>
-</div>
-
-<!-- HUD -->
-<div id="hud" style="display:none;">
-  <div class="hud-left">
-    <div class="hud-pill money">💰 <span id="hud-wallet">R$ 0</span></div>
-    <div class="hud-pill">⭐ <span id="hud-points">0</span></div>
-  </div>
-  <div class="hud-right">
-    <div style="display:flex; gap:8px;">
-      <button class="icon-btn" id="btn-cart-desktop">🛒</button>
-      <button class="icon-btn" id="btn-settings-ingame">⚙️</button>
+<!-- ==================== APP ==================== -->
+<div id="app-screen">
+  <div class="app-shell">
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <h2>Monitoramento AEE</h2>
+        <div class="mono">painel</div>
+      </div>
+      <div class="sidebar-user">
+        <div class="name" id="sb-name">—</div>
+        <div class="role" id="sb-role">—</div>
+        <div class="meta" id="sb-meta"></div>
+      </div>
+      <div id="nav-items"></div>
+      <div class="sidebar-bottom">
+        <button class="logout-btn" id="btn-logout">Sair</button>
+      </div>
     </div>
-    <div class="hud-pill" id="mission-pill" style="flex-direction:column; align-items:stretch; min-width:180px;">
-      <div style="display:flex; justify-content:space-between; gap:10px;"><span id="mission-label">📋 Missão 1/5</span></div>
-      <div id="mission-bar-wrap"><div id="mission-bar"></div></div>
-    </div>
-  </div>
-</div>
-<div class="hud-bottom-hint">W A S D — mover &nbsp;|&nbsp; MOUSE — olhar &nbsp;|&nbsp; E — interagir</div>
-
-<div id="minimap-wrap"><canvas id="minimap" width="130" height="130"></canvas></div>
-
-<div id="interact-prompt"></div>
-
-<!-- CONTROLES MOBILE -->
-<div id="joystick-zone"><div id="joystick-base"></div><div id="joystick-stick"></div></div>
-<div id="camera-touch-zone"></div>
-<button id="interact-btn-mobile">INTERAGIR</button>
-<button id="cart-btn-mobile">🛒<span class="cart-badge" id="cart-badge-mobile" style="display:none;">0</span></button>
-
-<!-- PAINEL CARRINHO -->
-<div id="cart-panel">
-  <h2>🛒 Meu Carrinho</h2>
-  <div id="cart-list"></div>
-  <div id="cart-empty">Seu carrinho está vazio.<br>Explore o supermercado e adicione produtos!</div>
-  <div id="cart-total"></div>
-  <button class="btn" id="btn-close-cart" style="margin-top:6px;">Fechar</button>
-</div>
-
-<!-- DESAFIO MATEMÁTICO -->
-<div class="modal-overlay" id="challenge-modal">
-  <div class="modal-card">
-    <div class="challenge-badge" id="challenge-level-badge">DESAFIO</div>
-    <h2 style="margin-top:6px;">🧠 Desafio Matemático</h2>
-    <div id="challenge-question">?</div>
-    <div id="challenge-options"></div>
-    <div id="challenge-feedback"></div>
-    <div id="challenge-hint-text"></div>
-    <button id="challenge-hint-btn">💡 Preciso de uma dica</button>
+    <div class="main" id="main-content"></div>
   </div>
 </div>
 
-<!-- CHECKOUT -->
-<div class="modal-overlay" id="checkout-modal">
-  <div class="modal-card">
-    <h2 id="checkout-title">💳 Sua Compra</h2>
-    <div id="checkout-lines"></div>
-    <div class="checkout-total"><span>TOTAL</span><span id="checkout-total-val">R$ 0</span></div>
-    <div class="wallet-line"><span>💰 Dinheiro na carteira</span><span id="checkout-wallet-val">R$ 0</span></div>
-    <div id="checkout-troco-section" style="margin-top:16px; text-align:center;">
-      <div style="font-family:var(--font-display); font-weight:800; color:var(--verde-escuro); font-size:17px; margin-bottom:8px;">Qual será o seu troco?</div>
-      <div id="checkout-troco-eq" style="font-family:var(--font-display); font-size:26px; color:var(--laranja-escuro); font-weight:800; margin-bottom:14px;"></div>
-      <div id="checkout-options" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;"></div>
-    </div>
-    <div id="checkout-feedback" style="margin-top:14px; font-weight:800; text-align:center; min-height:24px; color:var(--verde-escuro);"></div>
-  </div>
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-body"></div>
 </div>
 
-<!-- DINHEIRO INSUFICIENTE -->
-<div class="modal-overlay" id="insufficient-modal">
-  <div class="modal-card">
-    <h2>⚠️ Dinheiro Insuficiente</h2>
-    <div id="insufficient-text" style="text-align:center; font-weight:700; font-size:17px; margin-bottom:18px;"></div>
-    <div style="text-align:center;"><button class="btn" id="btn-back-to-challenges">🧠 Voltar aos Desafios</button></div>
-  </div>
-</div>
-
-<!-- MISSÃO COMPLETA -->
-<div class="modal-overlay" id="mission-complete-modal">
-  <div class="modal-card">
-    <h2 id="mc-title">🎉 Missão Concluída!</h2>
-    <div class="stat-row"><span>🧮 Contas respondidas</span><span id="mc-answered">0</span></div>
-    <div class="stat-row"><span>✅ Acertos</span><span id="mc-correct">0</span></div>
-    <div class="stat-row"><span>❌ Erros</span><span id="mc-wrong">0</span></div>
-    <div class="stat-row"><span>💰 Dinheiro ganho</span><span id="mc-earned">R$ 0</span></div>
-    <div class="stat-row"><span>🛒 Gasto em compras</span><span id="mc-spent">R$ 0</span></div>
-    <div class="stat-row"><span>💵 Saldo atual</span><span id="mc-balance">R$ 0</span></div>
-    <div style="display:flex; gap:10px; margin-top:18px;">
-      <button class="btn secondary" id="btn-replay-mission" style="flex:1;">Jogar Mais</button>
-      <button class="btn" id="btn-next-mission" style="flex:1;">Próxima Missão</button>
-    </div>
-  </div>
-</div>
-
-<div id="toast-container"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-window.addEventListener('error', function(e){ console.error('ERRO NO JOGO:', e.message, e.filename, e.lineno); });
-</script>
+<div class="toast" id="toast"></div>
 
 <script>
-/* =========================================================================
-   MISSÃO SUPERMERCADO — JOGO EDUCATIVO 3D DE MATEMÁTICA
-   Estrutura: CONFIG > ÁUDIO > MATEMÁTICA > ESTADO > MISSÕES > CENA 3D >
-              LOJA/PRODUTOS > AVATAR > CÂMERA > CONTROLES > MOBILE >
-              INTERAÇÕES > CARRINHO/COMPRAS > CAIXA/TROCO > HUD/MINIMAPA >
-              UI GERAL > LOOP PRINCIPAL
-   ========================================================================= */
+/* ============================================================
+   MONITORAMENTO AEE — estado, persistência e telas
+   ============================================================ */
 
-/* ============================== 1. CONFIG ============================== */
-const IS_MOBILE = (('ontouchstart' in window) || navigator.maxTouchPoints > 0) && window.matchMedia('(max-width:900px)').matches;
-const STORE = { halfW: 24, halfD: 18 };
-
-/* ============================== 2. ÁUDIO ================================
-   Sons gerados proceduralmente via Web Audio (sem arquivos externos). */
-const Audio1 = (function(){
-  let ctx = null;
-  function getCtx(){ if(!ctx) ctx = new (window.AudioContext||window.webkitAudioContext)(); return ctx; }
-  function tone(freq, dur, type, vol, delay){
-    if(!GameState.soundOn) return;
-    try{
-      const c = getCtx();
-      const t0 = c.currentTime + (delay||0);
-      const osc = c.createOscillator();
-      const gain = c.createGain();
-      osc.type = type || 'sine';
-      osc.frequency.setValueAtTime(freq, t0);
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(vol||0.15, t0+0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, t0+dur);
-      osc.connect(gain); gain.connect(c.destination);
-      osc.start(t0); osc.stop(t0+dur+0.05);
-    }catch(e){}
-  }
-  return {
-    coin(){ tone(880,0.12,'triangle',0.18,0); tone(1320,0.14,'triangle',0.14,0.06); },
-    correct(){ tone(523,0.1,'sine',0.16,0); tone(659,0.1,'sine',0.16,0.09); tone(784,0.18,'sine',0.18,0.18); },
-    wrong(){ tone(220,0.22,'sawtooth',0.12,0); },
-    click(){ tone(400,0.06,'square',0.08,0); },
-    complete(){ tone(523,0.12,'sine',0.16,0); tone(659,0.12,'sine',0.16,0.12); tone(784,0.12,'sine',0.16,0.24); tone(1046,0.28,'sine',0.2,0.36); },
-    purchase(){ tone(300,0.08,'triangle',0.14,0); tone(240,0.1,'triangle',0.12,0.08); }
-  };
-})();
-
-/* ============================ 3. MATEMÁTICA ==============================
-   Banco de questões gerado proceduralmente (100+ questões), organizado
-   pelos níveis pedidos. Evita repetir a última pergunta usada. */
-const MathBank = (function(){
-  let lastQuestionKey = null;
-
-  function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
-  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-
-  function makeOptions(correct, spread){
-    const opts = new Set([correct]);
-    while(opts.size < 4){
-      let delta = randInt(-spread, spread);
-      if(delta === 0) delta = 1;
-      let candidate = correct + delta;
-      if(candidate < 0) candidate = correct + Math.abs(delta);
-      opts.add(candidate);
-    }
-    return shuffle(Array.from(opts));
-  }
-
-  function buildQuestion(a, b, op, hintExtra){
-    let text, correct, hint;
-    if(op === '+'){
-      correct = a + b;
-      text = `${a} + ${b} = ?`;
-      hint = `Comece no ${a} e conte mais ${b}.`;
-    } else {
-      correct = a - b;
-      text = `${a} - ${b} = ?`;
-      hint = `Comece no ${a} e conte ${b} pra trás.`;
-    }
-    if(hintExtra) hint = hintExtra;
-    const spread = Math.max(2, Math.round(correct*0.25)+1);
-    const options = makeOptions(correct, spread);
-    return { text, correct, options, hint, correctIndex: options.indexOf(correct) };
-  }
-
-  // NÍVEL 1: adição até 10
-  function level1(){ const a=randInt(1,8), b=randInt(1,10-a); return buildQuestion(a,b,'+'); }
-  // NÍVEL 2: subtração até 10
-  function level2(){ const a=randInt(3,10), b=randInt(1,a); return buildQuestion(a,b,'-'); }
-  // NÍVEL 3: adição e subtração até 20
-  function level3(){ const op = Math.random()<0.5?'+':'-';
-    if(op==='+'){ const a=randInt(2,18), b=randInt(1,20-a); return buildQuestion(a,b,'+'); }
-    const a=randInt(5,20), b=randInt(1,a); return buildQuestion(a,b,'-'); }
-  // NÍVEL 4: adição e subtração até 50
-  function level4(){ const op = Math.random()<0.5?'+':'-';
-    if(op==='+'){ const a=randInt(5,45), b=randInt(1,50-a); return buildQuestion(a,b,'+'); }
-    const a=randInt(10,50), b=randInt(1,a); return buildQuestion(a,b,'-'); }
-  // NÍVEL 5: adição e subtração até 100
-  function level5(){ const op = Math.random()<0.5?'+':'-';
-    if(op==='+'){ const a=randInt(10,90), b=randInt(1,100-a); return buildQuestion(a,b,'+'); }
-    const a=randInt(20,100), b=randInt(1,a); return buildQuestion(a,b,'-'); }
-  // NÍVEL 6: problemas envolvendo compras e dinheiro / troco
-  function level6(){
-    const kind = Math.random();
-    if(kind < 0.34){
-      const p1 = PRODUCTS[randInt(0,PRODUCTS.length-1)], p2 = PRODUCTS[randInt(0,PRODUCTS.length-1)];
-      const correct = p1.price + p2.price;
-      const text = `Se ${p1.name} custa R$ ${p1.price} e ${p2.name} custa R$ ${p2.price}, quanto custam os dois juntos?`;
-      const options = makeOptions(correct, 5);
-      return { text, correct, options, hint:`Some os dois preços: ${p1.price} + ${p2.price}.`, correctIndex: options.indexOf(correct), money:true };
-    } else if(kind < 0.67){
-      const given = randInt(10,50);
-      const p = PRODUCTS[randInt(0,PRODUCTS.length-1)];
-      const price = Math.min(p.price, given-1);
-      const correct = given - price;
-      const text = `Você tem R$ ${given} e compra ${p.name} por R$ ${price}. Quanto sobra?`;
-      const options = makeOptions(correct, 5);
-      return { text, correct, options, hint:`Calcule ${given} - ${price}.`, correctIndex: options.indexOf(correct), money:true };
-    } else {
-      const total = randInt(15,60);
-      const paid = total + randInt(1,20);
-      const correct = paid - total;
-      const text = `A compra deu R$ ${total} e você pagou R$ ${paid}. Qual é o troco?`;
-      const options = makeOptions(correct, 5);
-      return { text, correct, options, hint:`O troco é ${paid} - ${total}.`, correctIndex: options.indexOf(correct), money:true };
-    }
-  }
-
-  const levels = [level1, level2, level3, level4, level5, level6];
-
-  function next(forcedLevel){
-    const lvl = Math.min(6, Math.max(1, forcedLevel || GameState.difficultyLevel));
-    let q, tries=0;
-    do{ q = levels[lvl-1](); tries++; } while(q.text === lastQuestionKey && tries < 6);
-    lastQuestionKey = q.text;
-    q.level = lvl;
-    return q;
-  }
-
-  function trocoQuestion(total, paid){
-    const correct = paid - total;
-    const opts = makeOptions(correct, 4);
-    return { text:`${paid} - ${total} = ?`, correct, options:opts, correctIndex: opts.indexOf(correct) };
-  }
-
-  return { next, trocoQuestion };
-})();
-
-/* ============================ 4. PRODUTOS ================================
-   Layout de setores/corredores do supermercado. Posições em unidades 3D. */
-const PRODUCTS = [
-  // FRUTAS (corredor 1, x ~ -16)
-  { id:'maca', name:'Maçã', emoji:'🍎', price:3, category:'Frutas', color:0xe63946, x:-16, z:-9 },
-  { id:'banana', name:'Banana', emoji:'🍌', price:2, category:'Frutas', color:0xffd23f, x:-16, z:-5 },
-  { id:'laranja', name:'Laranja', emoji:'🍊', price:3, category:'Frutas', color:0xff9f1c, x:-16, z:-1 },
-  { id:'uva', name:'Uva', emoji:'🍇', price:5, category:'Frutas', color:0x6a4c93, x:-16, z:3 },
-  { id:'morango', name:'Morango', emoji:'🍓', price:6, category:'Frutas', color:0xd90429, x:-16, z:7 },
-  // BEBIDAS (corredor 2, x ~ -6)
-  { id:'agua', name:'Água', emoji:'💧', price:2, category:'Bebidas', color:0x48cae4, x:-6, z:-9 },
-  { id:'suco', name:'Suco', emoji:'🧃', price:6, category:'Bebidas', color:0xffb703, x:-6, z:-3 },
-  { id:'leite', name:'Leite', emoji:'🥛', price:5, category:'Bebidas', color:0xf1faee, x:-6, z:3 },
-  // ALIMENTOS (corredor 3, x ~ 4)
-  { id:'arroz', name:'Arroz', emoji:'🍚', price:8, category:'Alimentos', color:0xe9ecef, x:4, z:-9 },
-  { id:'feijao', name:'Feijão', emoji:'🫘', price:7, category:'Alimentos', color:0x6b4226, x:4, z:-5 },
-  { id:'macarrao', name:'Macarrão', emoji:'🍝', price:6, category:'Alimentos', color:0xffe066, x:4, z:-1 },
-  { id:'pao', name:'Pão', emoji:'🍞', price:4, category:'Alimentos', color:0xd9a066, x:4, z:3 },
-  { id:'biscoito', name:'Biscoito', emoji:'🍪', price:4, category:'Alimentos', color:0xc68642, x:4, z:7 },
-  // HIGIENE (corredor 4, x ~ 14)
-  { id:'sabonete', name:'Sabonete', emoji:'🧼', price:3, category:'Higiene', color:0x90e0ef, x:14, z:-7 },
-  { id:'shampoo', name:'Shampoo', emoji:'🧴', price:9, category:'Higiene', color:0x8ecae6, x:14, z:-2 },
-  { id:'pastadente', name:'Pasta de Dente', emoji:'🪥', price:5, category:'Higiene', color:0x2ec4b6, x:14, z:3 },
-];
-
-/* ============================== 5. ESTADO ================================ */
-const GameState = {
-  soundOn: true,
-  wallet: 0,
-  points: 0,
-  streak: 0,
-  correctCount: 0,
-  wrongCount: 0,
-  moneyEarnedTotal: 0,
-  moneySpentTotal: 0,
-  difficultyLevel: 1,
-  missionIndex: 0,
-  hasCart: false,
-  cart: [],            // {id,name,price,emoji}
-  shoppingList: null,  // for missão 3
-  unlocked: { cart2:false, outfit:false, area:false, special:false },
-  currentMissionStats: { answered:0, correct:0, wrong:0, earned:0, spent:0 },
-  gameStarted:false,
+let STATE = {
+  users: [],        // {id, tipo:'pedagogo'|'aee'|'regente', nome, usuario, senha, disciplina, turma, aeeId}
+  index: [],        // metadados de conteúdos (sem o arquivo em si)
+  session: null,    // usuário logado
+  activeTab: null
 };
 
-function saveState(){
-  try{ localStorage.setItem('missao-supermercado-save', JSON.stringify({
-    wallet:GameState.wallet, points:GameState.points, missionIndex:GameState.missionIndex,
-    unlocked:GameState.unlocked, soundOn:GameState.soundOn
-  })); }catch(e){}
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+
+function showToast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.classList.remove('show'), 2600);
 }
-function loadState(){
+
+/* ---------- Storage ---------- */
+async function loadData(){
   try{
-    const raw = localStorage.getItem('missao-supermercado-save');
-    if(!raw) return;
-    const d = JSON.parse(raw);
-    Object.assign(GameState, { wallet:d.wallet||0, points:d.points||0, missionIndex:d.missionIndex||0, unlocked:d.unlocked||GameState.unlocked, soundOn: d.soundOn!==undefined?d.soundOn:true });
-  }catch(e){}
-}
+    const u = await window.storage.get('users', true);
+    STATE.users = u ? JSON.parse(u.value) : null;
+  }catch(e){ STATE.users = null; }
+  try{
+    const c = await window.storage.get('conteudo-index', true);
+    STATE.index = c ? JSON.parse(c.value) : [];
+  }catch(e){ STATE.index = []; }
 
-/* ============================== 6. MISSÕES ================================ */
-const MISSIONS = [
-  { id:1, title:'Missão 1 — Primeiro Dinheiro', desc:'Resolva 3 contas para ganhar seu primeiro dinheiro.',
-    target:3, reward:10, type:'answer_count',
-    check(){ return GameState.currentMissionStats.correct >= 3; } },
-  { id:2, title:'Missão 2 — Primeira Compra', desc:'Compre um produto que custe até R$ 10.',
-    target:1, reward:5, type:'buy_under',
-    check(){ return GameState._boughtUnder10 === true; } },
-  { id:3, title:'Missão 3 — Lista de Compras', desc:'Compre 1 maçã, 1 suco e 1 pão.',
-    target:3, reward:15, type:'shopping_list',
-    check(){ return GameState._listComplete === true; } },
-  { id:4, title:'Missão 4 — Compras Inteligentes', desc:'Você recebeu R$ 30. Compre sem ultrapassar esse valor.',
-    target:1, reward:10, type:'budget',
-    check(){ return GameState._budgetDone === true; } },
-  { id:5, title:'Missão 5 — Desafio do Troco', desc:'Calcule corretamente o troco de uma compra no caixa.',
-    target:1, reward:20, type:'troco',
-    check(){ return GameState._trocoDone === true; } },
-];
-
-function currentMission(){ return MISSIONS[Math.min(GameState.missionIndex, MISSIONS.length-1)]; }
-
-function resetMissionStats(){
-  GameState.currentMissionStats = { answered:0, correct:0, wrong:0, earned:0, spent:0 };
-}
-
-function checkMissionProgress(){
-  const m = currentMission();
-  if(m.check()){
-    completeMission(m);
+  if(!STATE.users){
+    STATE.users = [
+      {id:uid(), tipo:'pedagogo', nome:'Coordenação Pedagógica', usuario:'pedagogo', senha:'pedagogo123'}
+    ];
+    await saveUsers();
   }
-  updateMissionHUD();
+}
+async function saveUsers(){
+  try{ await window.storage.set('users', JSON.stringify(STATE.users), true); }
+  catch(e){ showToast('Erro ao salvar dados. Tente novamente.'); }
+}
+async function saveIndex(){
+  try{ await window.storage.set('conteudo-index', JSON.stringify(STATE.index), true); }
+  catch(e){ showToast('Erro ao salvar dados. Tente novamente.'); }
+}
+async function saveFile(id, dataUrl){
+  try{ await window.storage.set('conteudo-file:'+id, dataUrl, true); return true; }
+  catch(e){ showToast('Arquivo muito grande para salvar (máx. ~2MB).'); return false; }
+}
+async function getFile(id){
+  try{ const f = await window.storage.get('conteudo-file:'+id, true); return f ? f.value : null; }
+  catch(e){ return null; }
 }
 
-function completeMission(m){
-  GameState.points += 20;
-  GameState.wallet += m.reward;
-  GameState.moneyEarnedTotal += m.reward;
-  showToast(`+R$ ${m.reward}`, 'money');
-  showToast(`Missão concluída! ⭐`, 'points');
-  Audio1.complete();
-  spawnConfetti();
-  openMissionCompleteModal(m);
-}
-
-/* ============================ 7. CENA 3D ================================= */
-let scene, camera, renderer, clock;
-let interactables = []; // {mesh, type, data, radius, group}
-let shelfColliders = []; // {minX,maxX,minZ,maxZ}
-
-function initScene(){
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xbfe3c8);
-  scene.fog = new THREE.Fog(0xbfe3c8, 30, 70);
-
-  camera = new THREE.PerspectiveCamera(62, window.innerWidth/window.innerHeight, 0.1, 200);
-
-  renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('game-canvas'), antialias:true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-  // Luzes
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x88a878, 0.9);
-  scene.add(hemi);
-  const sun = new THREE.DirectionalLight(0xfff4e0, 1.05);
-  sun.position.set(18, 26, 12);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(1024,1024);
-  sun.shadow.camera.left = -30; sun.shadow.camera.right = 30;
-  sun.shadow.camera.top = 30; sun.shadow.camera.bottom = -30;
-  sun.shadow.camera.far = 60;
-  scene.add(sun);
-
-  buildStore();
-  buildAvatar();
-  clock = new THREE.Clock();
-
-  window.addEventListener('resize', onResize);
-}
-
-function onResize(){
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function makeLabelSprite(text, bg, fg){
-  const canvas = document.createElement('canvas');
-  canvas.width = 256; canvas.height = 128;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = bg || '#ffffff';
-  roundRect(ctx, 4,4,248,120,24); ctx.fill();
-  ctx.font = '700 40px Nunito, sans-serif';
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(text.split(' ')[0], 128, 46);
-  ctx.font = '800 26px Nunito, sans-serif';
-  ctx.fillStyle = fg || '#1b3a2f';
-  ctx.fillText(text.split(' ').slice(1).join(' '), 128, 92);
-  const tex = new THREE.CanvasTexture(canvas);
-  const mat = new THREE.SpriteMaterial({ map:tex, transparent:true });
-  const spr = new THREE.Sprite(mat);
-  spr.scale.set(1.6,0.8,1);
-  return spr;
-}
-function roundRect(ctx,x,y,w,h,r){
-  ctx.beginPath();
-  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
-  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
-}
-
-/* ---- CHÃO, PAREDES, TETO ---- */
-function buildStore(){
-  const W = STORE.halfW*2, D = STORE.halfD*2;
-
-  // Chão (ladrilho claro)
-  const floorMat = new THREE.MeshStandardMaterial({ color:0xf1ede1, roughness:0.9 });
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), floorMat);
-  floor.rotation.x = -Math.PI/2;
-  floor.receiveShadow = true;
-  scene.add(floor);
-
-  // Linhas de corredor decorativas
-  const lineMat = new THREE.MeshBasicMaterial({ color:0xdcd6c2 });
-  [-16,-6,4,14].forEach(x=>{
-    const line = new THREE.Mesh(new THREE.PlaneGeometry(1.2, D-4), lineMat);
-    line.rotation.x = -Math.PI/2; line.position.set(x, 0.01, 0);
-    scene.add(line);
-  });
-
-  // Paredes
-  const wallMat = new THREE.MeshStandardMaterial({ color:0x8fbf9f, roughness:1 });
-  const wallH = 6;
-  const wallBack = new THREE.Mesh(new THREE.BoxGeometry(W, wallH, 0.6), wallMat);
-  wallBack.position.set(0, wallH/2, -STORE.halfD); wallBack.castShadow=true; wallBack.receiveShadow=true;
-  scene.add(wallBack);
-  const wallLeft = new THREE.Mesh(new THREE.BoxGeometry(0.6, wallH, D), wallMat);
-  wallLeft.position.set(-STORE.halfW, wallH/2, 0); wallLeft.receiveShadow=true;
-  scene.add(wallLeft);
-  const wallRight = wallLeft.clone(); wallRight.position.x = STORE.halfW;
-  scene.add(wallRight);
-  // Parede frontal com abertura (entrada)
-  const wallFrontL = new THREE.Mesh(new THREE.BoxGeometry(W*0.32, wallH, 0.6), wallMat);
-  wallFrontL.position.set(-W*0.34, wallH/2, STORE.halfD); scene.add(wallFrontL);
-  const wallFrontR = wallFrontL.clone(); wallFrontR.position.x = W*0.34; scene.add(wallFrontR);
-
-  // Placa "MISSÃO SUPERMERCADO"
-  const signSprite = makeLabelSprite('MISSÃO SUPERMERCADO', '#ff9f1c', '#fff');
-  signSprite.scale.set(6,2.2,1);
-  signSprite.position.set(0, 5.2, -STORE.halfD+0.5);
-  scene.add(signSprite);
-
-  buildAisle('Frutas', -16, 0xf6c453);
-  buildAisle('Bebidas', -6, 0x9fd8cb);
-  buildAisle('Alimentos', 4, 0xf3b8a0);
-  buildAisle('Higiene', 14, 0xa8d0e6);
-
-  buildProducts();
-  buildChallengeStations();
-  buildCartStation();
-  buildCheckoutCounter();
-
-  shelfColliders.push(
-    {minX:-17,maxX:-15,minZ:-11,maxZ:9},
-    {minX:-7,maxX:-5,minZ:-11,maxZ:5},
-    {minX:3,maxX:5,minZ:-11,maxZ:9},
-    {minX:13,maxX:15,minZ:-9,maxZ:5}
-  );
-}
-
-function buildAisle(name, x, color){
-  // Prateleira (base simples otimizada em baixo poligono)
-  const shelfMat = new THREE.MeshStandardMaterial({ color:0xa9744f, roughness:0.8 });
-  const shelfGeo = new THREE.BoxGeometry(1.6, 2.4, 15);
-  const shelf = new THREE.Mesh(shelfGeo, shelfMat);
-  shelf.position.set(x, 1.2, -1);
-  shelf.castShadow = true; shelf.receiveShadow = true;
-  scene.add(shelf);
-
-  for(let i=0;i<3;i++){
-    const shelfBoard = new THREE.Mesh(new THREE.BoxGeometry(1.7,0.08,15), new THREE.MeshStandardMaterial({color:0x7a5233}));
-    shelfBoard.position.set(x, 0.5+i*0.9, -1);
-    scene.add(shelfBoard);
-  }
-
-  // Placa de setor
-  const sign = makeLabelSprite(name+' ', '#'+color.toString(16).padStart(6,'0'), '#1b3a2f');
-  sign.position.set(x, 3.6, -9.6);
-  scene.add(sign);
-}
-
-/* ---- PRODUTOS (marcadores interativos) ---- */
-function buildProducts(){
-  PRODUCTS.forEach(p=>{
-    const group = new THREE.Group();
-    const geo = Math.random()>0.5 ? new THREE.SphereGeometry(0.5,14,14) : new THREE.BoxGeometry(0.75,0.75,0.75);
-    const mat = new THREE.MeshStandardMaterial({ color:p.color, roughness:0.6 });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.y = 1.45;
-    mesh.castShadow = true;
-    group.add(mesh);
-
-    const label = makeLabelSprite(`${p.emoji} R$${p.price}`, '#ffffff', '#1b3a2f');
-    label.scale.set(1.5,0.75,1);
-    label.position.y = 2.35;
-    group.add(label);
-
-    const px = p.x + (p.x<0? 1.15 : -1.15);
-    group.position.set(px, 0, p.z);
-    scene.add(group);
-
-    interactables.push({ mesh:group, type:'product', data:p, radius:2.1, baseY:1.45, innerMesh:mesh });
-  });
-}
-
-/* ---- ESTAÇÕES DE DESAFIO (orbes flutuantes) ---- */
-function buildChallengeStations(){
-  const positions = [
-    {x:-11,z:-9},{x:-1,z:-6},{x:9,z:-9},{x:19,z:-4},{x:-11,z:8},{x:9,z:8},
-  ];
-  positions.forEach((pos,i)=>{
-    const group = new THREE.Group();
-    const geo = new THREE.IcosahedronGeometry(0.55, 0);
-    const mat = new THREE.MeshStandardMaterial({ color:0x3a86ff, emissive:0x1c4fbf, emissiveIntensity:0.4, roughness:0.3, metalness:0.2 });
-    const orb = new THREE.Mesh(geo, mat);
-    orb.position.y = 1.7;
-    orb.castShadow = true;
-    group.add(orb);
-
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.9,0.05,8,24), new THREE.MeshBasicMaterial({color:0xffd23f}));
-    ring.rotation.x = Math.PI/2;
-    ring.position.y = 0.05;
-    group.add(ring);
-
-    const label = makeLabelSprite('🧠 DESAFIO', '#3a86ff', '#fff');
-    label.scale.set(1.3,0.65,1);
-    label.position.y = 2.5;
-    group.add(label);
-
-    group.position.set(pos.x, 0, pos.z);
-    scene.add(group);
-    interactables.push({ mesh:group, type:'challenge', data:{id:'ch'+i}, radius:2.3, baseY:1.7, innerMesh:orb, spin:true });
-  });
-}
-
-/* ---- CARRINHO (pegar) ---- */
-function buildCartStation(){
-  const group = new THREE.Group();
-  const body = new THREE.Mesh(new THREE.BoxGeometry(0.9,0.7,1.3), new THREE.MeshStandardMaterial({ color:0xcccccc, wireframe:false, metalness:0.4, roughness:0.5 }));
-  body.position.y = 0.6;
-  body.castShadow = true;
-  group.add(body);
-  const handle = new THREE.Mesh(new THREE.BoxGeometry(0.9,0.5,0.08), new THREE.MeshStandardMaterial({color:0x888888}));
-  handle.position.set(0,1.05,0.6);
-  group.add(handle);
-  [[-0.35,-0.55],[0.35,-0.55],[-0.35,0.55],[0.35,0.55]].forEach(([x,z])=>{
-    const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.12,0.08,10), new THREE.MeshStandardMaterial({color:0x333333}));
-    wheel.rotation.z = Math.PI/2; wheel.position.set(x,0.15,z);
-    group.add(wheel);
-  });
-  const label = makeLabelSprite('🛒 CARRINHO', '#ff9f1c', '#fff');
-  label.scale.set(1.4,0.7,1); label.position.y=1.7;
-  group.add(label);
-
-  group.position.set(0, 0, 10.5);
-  scene.add(group);
-  interactables.push({ mesh:group, type:'cart_pickup', data:{}, radius:2.2, baseY:0, innerMesh:body });
-}
-
-/* ---- CAIXA (checkout) ---- */
-function buildCheckoutCounter(){
-  const group = new THREE.Group();
-  const counter = new THREE.Mesh(new THREE.BoxGeometry(3,1.1,1.2), new THREE.MeshStandardMaterial({color:0xffffff, roughness:0.6}));
-  counter.position.y=0.55; counter.castShadow=true; counter.receiveShadow=true;
-  group.add(counter);
-  const stripe = new THREE.Mesh(new THREE.BoxGeometry(3.02,0.25,1.22), new THREE.MeshStandardMaterial({color:0x3a86ff}));
-  stripe.position.y=0.15; group.add(stripe);
-  const label = makeLabelSprite('💳 CAIXA', '#3a86ff', '#fff');
-  label.scale.set(1.3,0.65,1); label.position.y=1.9;
-  group.add(label);
-  group.position.set(-9, 0, 12.5);
-  scene.add(group);
-  interactables.push({ mesh:group, type:'checkout', data:{}, radius:2.6, baseY:0, innerMesh:counter });
-  shelfColliders.push({minX:-10.6,maxX:-7.4,minZ:11.9,maxZ:13.1});
-}
-
-/* ============================== 8. AVATAR ================================= */
-let avatar, avatarParts = {};
-const Player = {
-  x: 0, z: 13, yaw: 0, speed: 5.2, moving:false, cartMesh:null
+/* ---------- Login ---------- */
+let selectedRole = 'pedagogo';
+const demoHints = {
+  pedagogo:'usuário demo: pedagogo · senha: pedagogo123',
+  aee:'peça ao pedagogo(a) para cadastrar seu acesso',
+  regente:'peça ao professor(a) do AEE para cadastrar seu acesso'
 };
 
-function buildAvatar(){
-  avatar = new THREE.Group();
-
-  const skin = new THREE.MeshStandardMaterial({ color:0xffd1a6, roughness:0.7 });
-  const shirt = new THREE.MeshStandardMaterial({ color:0x3a86ff, roughness:0.7 });
-  const pants = new THREE.MeshStandardMaterial({ color:0x2b2d42, roughness:0.8 });
-  avatarParts.shirtMat = shirt;
-
-  const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.36,0.62,12), shirt);
-  torso.position.y = 1.05; torso.castShadow = true;
-  avatar.add(torso);
-
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.28,16,16), skin);
-  head.position.y = 1.58; head.castShadow = true;
-  avatar.add(head);
-
-  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.29,16,16,0,Math.PI*2,0,Math.PI*0.55), new THREE.MeshStandardMaterial({color:0x4a2c19}));
-  hair.position.y = 1.66;
-  avatar.add(hair);
-
-  // Olhos simples
-  [-0.1,0.1].forEach(dx=>{
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.035,8,8), new THREE.MeshBasicMaterial({color:0x1b3a2f}));
-    eye.position.set(dx, 1.60, 0.25);
-    avatar.add(eye);
-  });
-
-  const armGeo = new THREE.CylinderGeometry(0.08,0.08,0.55,8);
-  const armL = new THREE.Mesh(armGeo, skin); armL.position.set(-0.42,1.05,0); armL.castShadow=true;
-  const armR = new THREE.Mesh(armGeo, skin); armR.position.set(0.42,1.05,0); armR.castShadow=true;
-  avatar.add(armL, armR);
-
-  const legGeo = new THREE.CylinderGeometry(0.11,0.11,0.6,8);
-  const legL = new THREE.Mesh(legGeo, pants); legL.position.set(-0.16,0.42,0); legL.castShadow=true;
-  const legR = new THREE.Mesh(legGeo, pants); legR.position.set(0.16,0.42,0); legR.castShadow=true;
-  avatar.add(legL, legR);
-
-  avatarParts.torso=torso; avatarParts.head=head; avatarParts.armL=armL; avatarParts.armR=armR;
-  avatarParts.legL=legL; avatarParts.legR=legR;
-
-  avatar.position.set(Player.x, 0, Player.z);
-  scene.add(avatar);
-}
-
-let walkCycle = 0;
-let celebrateT = 0;
-function updateAvatarAnimation(dt, isMoving){
-  avatar.position.set(Player.x, 0, Player.z);
-  avatar.rotation.y = Player.yaw;
-
-  if(celebrateT > 0){
-    celebrateT -= dt;
-    const s = Math.sin(performance.now()*0.02);
-    avatarParts.armL.rotation.z = 2.6 + s*0.15;
-    avatarParts.armR.rotation.z = -2.6 - s*0.15;
-    avatarParts.head.position.y = 1.58 + Math.max(0,Math.sin(celebrateT*20))*0.03;
-    return;
-  } else {
-    avatarParts.armL.rotation.z = 0;
-    avatarParts.armR.rotation.z = 0;
-  }
-
-  if(isMoving){
-    walkCycle += dt*9;
-    const swing = Math.sin(walkCycle)*0.55;
-    avatarParts.legL.rotation.x = swing;
-    avatarParts.legR.rotation.x = -swing;
-    avatarParts.armL.rotation.x = -swing*0.8;
-    avatarParts.armR.rotation.x = swing*0.8;
-    avatarParts.torso.position.y = 1.05 + Math.abs(Math.sin(walkCycle))*0.03;
-  } else {
-    walkCycle *= 0.8;
-    avatarParts.legL.rotation.x *= 0.8;
-    avatarParts.legR.rotation.x *= 0.8;
-    avatarParts.armL.rotation.x *= 0.8;
-    avatarParts.armR.rotation.x *= 0.8;
-    avatarParts.torso.position.y += (1.05 - avatarParts.torso.position.y)*0.15;
-  }
-
-  if(Player.cartMesh){
-    Player.cartMesh.position.set(
-      Player.x + Math.sin(Player.yaw)*1.35,
-      0,
-      Player.z + Math.cos(Player.yaw)*1.35
-    );
-    Player.cartMesh.rotation.y = Player.yaw;
-  }
-}
-function triggerCelebration(){ celebrateT = 0.9; }
-
-/* ============================== 9. CÂMERA ================================= */
-const CameraCtl = { yaw: Math.PI, pitch: 0.28, distance: 6.2, minPitch:0.05, maxPitch:0.85 };
-function updateCamera(){
-  const targetY = 1.3;
-  const camX = Player.x - Math.sin(CameraCtl.yaw)*Math.cos(CameraCtl.pitch)*CameraCtl.distance;
-  const camZ = Player.z - Math.cos(CameraCtl.yaw)*Math.cos(CameraCtl.pitch)*CameraCtl.distance;
-  const camY = targetY + Math.sin(CameraCtl.pitch)*CameraCtl.distance;
-  camera.position.set(camX, camY, camZ);
-  camera.lookAt(Player.x, targetY+0.3, Player.z);
-}
-
-/* ============================ 10. CONTROLES ================================ */
-const Input = { forward:0, right:0, dragging:false, lastX:0, lastY:0, keys:{} };
-
-function setupDesktopControls(){
-  window.addEventListener('keydown', e=>{
-    Input.keys[e.code] = true;
-    if(e.code === 'KeyE') tryInteract();
-  });
-  window.addEventListener('keyup', e=>{ Input.keys[e.code] = false; });
-
-  const canvas = document.getElementById('game-canvas');
-  canvas.addEventListener('mousedown', e=>{ Input.dragging = true; Input.lastX = e.clientX; Input.lastY = e.clientY; });
-  window.addEventListener('mouseup', ()=>{ Input.dragging = false; });
-  window.addEventListener('mousemove', e=>{
-    if(!Input.dragging) return;
-    const dx = e.clientX - Input.lastX, dy = e.clientY - Input.lastY;
-    Input.lastX = e.clientX; Input.lastY = e.clientY;
-    CameraCtl.yaw -= dx*0.006;
-    CameraCtl.pitch = Math.min(CameraCtl.maxPitch, Math.max(CameraCtl.minPitch, CameraCtl.pitch + dy*0.004));
-  });
-}
-
-function readKeyboardMove(){
-  let f=0, r=0;
-  if(Input.keys['KeyW']||Input.keys['ArrowUp']) f+=1;
-  if(Input.keys['KeyS']||Input.keys['ArrowDown']) f-=1;
-  if(Input.keys['KeyA']||Input.keys['ArrowLeft']) r+=1;
-  if(Input.keys['KeyD']||Input.keys['ArrowRight']) r-=1;
-  return {f,r};
-}
-
-function moveAvatar(dt){
-  if(isAnyModalOpen()) return false;
-  let f=0, r=0;
-  if(IS_MOBILE){
-    f = -Joystick.vecY; r = Joystick.vecX;
-  } else {
-    const km = readKeyboardMove(); f = km.f; r = km.r;
-  }
-  const moving = (Math.abs(f) > 0.05 || Math.abs(r) > 0.05);
-  if(moving){
-    const len = Math.hypot(f,r) || 1;
-    f/=len; r/=len;
-    const moveYaw = CameraCtl.yaw;
-    const dx = (Math.sin(moveYaw)*f + Math.cos(moveYaw)*r) * Player.speed * dt;
-    const dz = (Math.cos(moveYaw)*f - Math.sin(moveYaw)*r) * Player.speed * dt;
-    const nx = Player.x + dx, nz = Player.z + dz;
-    if(!collides(nx, Player.z)) Player.x = nx;
-    if(!collides(Player.x, nz)) Player.z = nz;
-    Player.x = Math.max(-STORE.halfW+0.8, Math.min(STORE.halfW-0.8, Player.x));
-    Player.z = Math.max(-STORE.halfD+0.8, Math.min(STORE.halfD-0.8, Player.z));
-    Player.yaw = Math.atan2(dx, dz) || Player.yaw;
-    if(Math.abs(dx)+Math.abs(dz) > 0.0001){
-      const targetYaw = Math.atan2( (Math.sin(moveYaw)*f + Math.cos(moveYaw)*r), (Math.cos(moveYaw)*f - Math.sin(moveYaw)*r) );
-      Player.yaw = targetYaw;
-    }
-  }
-  return moving;
-}
-
-function collides(x,z){
-  const pad = 0.35;
-  for(const c of shelfColliders){
-    if(x+pad>c.minX && x-pad<c.maxX && z+pad>c.minZ && z-pad<c.maxZ) return true;
-  }
-  return false;
-}
-
-/* ============================ 11. CONTROLES MOBILE ========================== */
-const Joystick = { active:false, vecX:0, vecY:0, touchId:null, baseX:0, baseY:0 };
-function setupMobileControls(){
-  document.getElementById('joystick-zone').style.display = 'block';
-  document.getElementById('camera-touch-zone').style.display = 'block';
-  document.getElementById('interact-btn-mobile').style.display = 'flex';
-  document.getElementById('cart-btn-mobile').style.display = 'flex';
-
-  const zone = document.getElementById('joystick-zone');
-  const stick = document.getElementById('joystick-stick');
-  const rect = () => zone.getBoundingClientRect();
-
-  function jStart(e){
-    const t = e.changedTouches[0];
-    Joystick.active = true; Joystick.touchId = t.identifier;
-    const r = rect(); Joystick.baseX = r.left+r.width/2; Joystick.baseY = r.top+r.height/2;
-    e.preventDefault();
-  }
-  function jMove(e){
-    if(!Joystick.active) return;
-    let t = null;
-    for(const touch of e.changedTouches){ if(touch.identifier === Joystick.touchId) t = touch; }
-    if(!t) return;
-    let dx = t.clientX - Joystick.baseX, dy = t.clientY - Joystick.baseY;
-    const max = 46;
-    const dist = Math.min(max, Math.hypot(dx,dy));
-    const ang = Math.atan2(dy,dx);
-    dx = Math.cos(ang)*dist; dy = Math.sin(ang)*dist;
-    stick.style.left = (37+dx)+'px'; stick.style.top = (37+dy)+'px';
-    Joystick.vecX = dx/max; Joystick.vecY = dy/max;
-    e.preventDefault();
-  }
-  function jEnd(e){
-    for(const touch of e.changedTouches){ if(touch.identifier === Joystick.touchId){ Joystick.active=false; Joystick.touchId=null; Joystick.vecX=0; Joystick.vecY=0; stick.style.left='37px'; stick.style.top='37px'; } }
-  }
-  zone.addEventListener('touchstart', jStart, {passive:false});
-  zone.addEventListener('touchmove', jMove, {passive:false});
-  zone.addEventListener('touchend', jEnd);
-  zone.addEventListener('touchcancel', jEnd);
-
-  // Câmera por toque (lado direito)
-  const camZone = document.getElementById('camera-touch-zone');
-  let camTouchId = null, lastCX=0, lastCY=0;
-  camZone.addEventListener('touchstart', e=>{
-    const t = e.changedTouches[0]; camTouchId = t.identifier; lastCX = t.clientX; lastCY = t.clientY;
-  }, {passive:false});
-  camZone.addEventListener('touchmove', e=>{
-    let t=null; for(const touch of e.changedTouches){ if(touch.identifier===camTouchId) t=touch; }
-    if(!t) return;
-    const dx = t.clientX-lastCX, dy = t.clientY-lastCY;
-    lastCX = t.clientX; lastCY = t.clientY;
-    CameraCtl.yaw -= dx*0.008;
-    CameraCtl.pitch = Math.min(CameraCtl.maxPitch, Math.max(CameraCtl.minPitch, CameraCtl.pitch + dy*0.005));
-    e.preventDefault();
-  }, {passive:false});
-  camZone.addEventListener('touchend', e=>{ camTouchId=null; });
-
-  document.getElementById('interact-btn-mobile').addEventListener('touchstart', e=>{ e.preventDefault(); tryInteract(); });
-  document.getElementById('cart-btn-mobile').addEventListener('touchstart', e=>{ e.preventDefault(); openCartPanel(); });
-}
-
-/* ============================ 12. INTERAÇÕES ================================ */
-let nearestInteractable = null;
-
-function updateInteractables(dt){
-  let nearest = null, nearestDist = Infinity;
-  const t = performance.now()*0.001;
-  interactables.forEach(it=>{
-    if(it.spin && it.innerMesh){ it.innerMesh.rotation.y += dt*1.2; }
-    if(it.baseY !== undefined && it.mesh){ it.mesh.position.y = Math.sin(t*1.6 + it.mesh.position.x)*0.08; }
-    if(it.hidden) return;
-    const d = Math.hypot(Player.x-it.mesh.position.x, Player.z-it.mesh.position.z);
-    if(d < it.radius && d < nearestDist){ nearestDist = d; nearest = it; }
-  });
-  nearestInteractable = nearest;
-  updateInteractPrompt();
-}
-
-function updateInteractPrompt(){
-  const el = document.getElementById('interact-prompt');
-  if(!nearestInteractable){ el.classList.remove('show'); return; }
-  let text = '';
-  const it = nearestInteractable;
-  if(it.type === 'product'){
-    text = IS_MOBILE ? `👆 ${it.data.emoji} ${it.data.name} <span class="price">R$ ${it.data.price}</span>` : `E — ${it.data.emoji} ${it.data.name} <span class="price">R$ ${it.data.price}</span>`;
-  } else if(it.type === 'challenge'){
-    text = IS_MOBILE ? '👆 RESPONDER DESAFIO' : 'E — Responder Desafio 🧠';
-  } else if(it.type === 'cart_pickup'){
-    text = Player.cartMesh ? '' : (IS_MOBILE ? '👆 PEGAR CARRINHO' : 'E — Pegar Carrinho 🛒');
-  } else if(it.type === 'checkout'){
-    text = IS_MOBILE ? '👆 PAGAR COMPRA' : 'E — Pagar Compra 💳';
-  }
-  if(!text){ el.classList.remove('show'); return; }
-  el.innerHTML = text;
-  el.classList.add('show');
-}
-
-function tryInteract(){
-  if(isAnyModalOpen() || !nearestInteractable) return;
-  const it = nearestInteractable;
-  Audio1.click();
-  if(it.type === 'product'){
-    addProductToCart(it.data);
-  } else if(it.type === 'challenge'){
-    openChallengeModal();
-  } else if(it.type === 'cart_pickup'){
-    pickUpCart(it);
-  } else if(it.type === 'checkout'){
-    openCheckoutModal();
-  }
-}
-
-function pickUpCart(it){
-  if(Player.cartMesh) return;
-  GameState.hasCart = true;
-  Player.cartMesh = it.mesh;
-  it.mesh.children.forEach(child=>{ if(child.isSprite) child.visible = false; });
-  showToast('Carrinho pego! 🛒', 'info');
-  it.radius = 0; it.hidden = true;
-}
-
-/* =========================== 13. CARRINHO / COMPRAS ========================== */
-function addProductToCart(p){
-  if(!GameState.hasCart){
-    showToast('Pegue o carrinho primeiro! 🛒', 'info');
-    return;
-  }
-  GameState.cart.push({ id:p.id, name:p.name, price:p.price, emoji:p.emoji });
-  showToast(`${p.emoji} ${p.name} adicionado!`, 'info');
-  Audio1.click();
-  renderCartPanel();
-  checkShoppingListProgress();
-}
-
-function cartTotal(){ return GameState.cart.reduce((s,i)=>s+i.price,0); }
-
-function renderCartPanel(){
-  const list = document.getElementById('cart-list');
-  const empty = document.getElementById('cart-empty');
-  const totalEl = document.getElementById('cart-total');
-  list.innerHTML = '';
-  if(GameState.cart.length === 0){
-    empty.style.display = 'block'; totalEl.textContent = '';
-  } else {
-    empty.style.display = 'none';
-    GameState.cart.forEach((item, idx)=>{
-      const row = document.createElement('div');
-      row.className = 'cart-item';
-      row.innerHTML = `<span>${item.emoji} ${item.name} — R$ ${item.price}</span><span class="rm" data-idx="${idx}">✕</span>`;
-      list.appendChild(row);
+function initLoginUI(){
+  $('#login-demo-hint').textContent = demoHints[selectedRole];
+  $$('.role-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      $$('.role-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedRole = btn.dataset.role;
+      $('#login-demo-hint').textContent = demoHints[selectedRole];
+      $('#login-error').style.display='none';
     });
-    totalEl.textContent = `TOTAL: R$ ${cartTotal()}`;
-  }
-  const badgeM = document.getElementById('cart-badge-mobile');
-  if(GameState.cart.length>0){ badgeM.style.display='flex'; badgeM.textContent = GameState.cart.length; }
-  else { badgeM.style.display='none'; }
+  });
+  $('#btn-login').addEventListener('click', doLogin);
+  $('#login-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 }
 
-document.addEventListener('click', e=>{
-  if(e.target.classList.contains('rm')){
-    const idx = parseInt(e.target.dataset.idx,10);
-    GameState.cart.splice(idx,1);
-    renderCartPanel();
+function doLogin(){
+  const usuario = $('#login-user').value.trim();
+  const senha = $('#login-pass').value;
+  const found = STATE.users.find(u => u.tipo===selectedRole && u.usuario.toLowerCase()===usuario.toLowerCase() && u.senha===senha);
+  const err = $('#login-error');
+  if(!found){
+    err.textContent = 'Usuário, senha ou perfil incorretos.';
+    err.style.display='block';
+    return;
   }
-});
-
-function openCartPanel(){ renderCartPanel(); document.getElementById('cart-panel').classList.add('show'); }
-function closeCartPanel(){ document.getElementById('cart-panel').classList.remove('show'); }
-
-function checkShoppingListProgress(){
-  // Missão 3: 1 maçã, 1 suco, 1 pão
-  if(currentMission().type !== 'shopping_list') return;
-  const need = { maca:1, suco:1, pao:1 };
-  const have = {};
-  GameState.cart.forEach(i=>{ have[i.id] = (have[i.id]||0)+1; });
-  const done = Object.keys(need).every(k => (have[k]||0) >= need[k]);
-  if(done) GameState._listComplete = true;
+  err.style.display='none';
+  STATE.session = found;
+  enterApp();
 }
 
-/* =========================== 14. CAIXA / TROCO ========================== */
-let checkoutState = null;
-function openCheckoutModal(){
-  if(GameState.cart.length === 0){
-    showToast('Seu carrinho está vazio!', 'info');
-    return;
-  }
-  const total = cartTotal();
-  const wallet = GameState.wallet;
-
-  if(wallet < total){
-    document.getElementById('insufficient-text').textContent = `Você tem R$ ${wallet} e precisa de R$ ${total}. Faltam R$ ${total-wallet}.`;
-    openModal('insufficient-modal');
-    return;
-  }
-
-  const linesEl = document.getElementById('checkout-lines');
-  linesEl.innerHTML = '';
-  GameState.cart.forEach(item=>{
-    const line = document.createElement('div');
-    line.className = 'checkout-line';
-    line.innerHTML = `<span>${item.emoji} ${item.name}</span><span>R$ ${item.price}</span>`;
-    linesEl.appendChild(line);
-  });
-  document.getElementById('checkout-total-val').textContent = `R$ ${total}`;
-  document.getElementById('checkout-wallet-val').textContent = `R$ ${wallet}`;
-  document.getElementById('checkout-feedback').textContent = '';
-
-  const q = MathBank.trocoQuestion(total, wallet);
-  checkoutState = { total, wallet, q, answered:false };
-
-  const eqEl = document.getElementById('checkout-troco-eq');
-  eqEl.textContent = `${wallet} - ${total} = ?`;
-  const optsEl = document.getElementById('checkout-options');
-  optsEl.innerHTML = '';
-  q.options.forEach((opt, idx)=>{
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.textContent = `R$ ${opt}`;
-    btn.addEventListener('click', ()=> answerCheckout(idx, btn));
-    optsEl.appendChild(btn);
-  });
-  document.getElementById('checkout-troco-section').style.display = 'block';
-  openModal('checkout-modal');
+function logout(){
+  STATE.session = null;
+  $('#login-user').value=''; $('#login-pass').value='';
+  $('#app-screen').style.display='none';
+  $('#login-screen').style.display='flex';
 }
 
-function answerCheckout(idx, btnEl){
-  if(!checkoutState || checkoutState.answered) return;
-  checkoutState.answered = true;
-  const correct = idx === checkoutState.q.correctIndex;
-  const buttons = document.querySelectorAll('#checkout-options .opt-btn');
-  buttons.forEach((b,i)=>{
-    if(i === checkoutState.q.correctIndex) b.classList.add('correct');
-    else if(i === idx && !correct) b.classList.add('wrong');
+/* ---------- App shell ---------- */
+function enterApp(){
+  $('#login-screen').style.display='none';
+  $('#app-screen').style.display='block';
+  $('#btn-logout').onclick = logout;
+
+  const u = STATE.session;
+  $('#sb-name').textContent = u.nome;
+  $('#sb-role').textContent = ({pedagogo:'Pedagogo(a) · Administrador', aee:'Professor(a) AEE', regente:'Professor(a) Regente'})[u.tipo];
+  $('#sb-meta').textContent = u.tipo==='regente' ? (u.disciplina+' · Turma '+u.turma) : '';
+
+  const navConfig = {
+    pedagogo: [
+      {id:'visao', label:'Visão geral'},
+      {id:'aees', label:'Professores AEE'},
+      {id:'regentes', label:'Professores Regentes'},
+      {id:'conteudos', label:'Conteúdos enviados'}
+    ],
+    aee: [
+      {id:'regentes-aee', label:'Meus Professores Regentes'},
+      {id:'conteudos-aee', label:'Conteúdos recebidos'}
+    ],
+    regente: [
+      {id:'enviar', label:'Enviar conteúdo'},
+      {id:'meus-envios', label:'Meus envios'}
+    ]
+  };
+  const items = navConfig[u.tipo];
+  const nav = $('#nav-items');
+  nav.innerHTML = '';
+  items.forEach((it,i)=>{
+    const b = document.createElement('button');
+    b.className = 'nav-item' + (i===0?' active':'');
+    b.textContent = it.label;
+    b.dataset.tab = it.id;
+    b.addEventListener('click', ()=>{
+      $$('.nav-item').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      STATE.activeTab = it.id;
+      render();
+    });
+    nav.appendChild(b);
   });
-  const fb = document.getElementById('checkout-feedback');
-  if(correct){
-    Audio1.purchase(); Audio1.coin();
-    fb.textContent = `🎉 Pagamento aprovado! Você terá R$ ${checkoutState.wallet-checkoutState.total} restantes.`;
-    finalizePurchase(checkoutState.total);
-    GameState._trocoDone = true;
-  } else {
-    Audio1.wrong();
-    fb.textContent = '💡 Vamos calcular novamente!';
-    setTimeout(()=>{ checkoutState.answered = false; buttons.forEach(b=>b.classList.remove('wrong','correct')); }, 900);
-    return;
+  STATE.activeTab = items[0].id;
+  render();
+}
+
+function render(){
+  const u = STATE.session;
+  if(u.tipo==='pedagogo') renderPedagogo();
+  else if(u.tipo==='aee') renderAEE();
+  else if(u.tipo==='regente') renderRegente();
+}
+
+/* ---------- Modal helper ---------- */
+function openModal(html){
+  $('#modal-body').innerHTML = html;
+  $('#modal-overlay').classList.add('open');
+}
+function closeModal(){ $('#modal-overlay').classList.remove('open'); }
+$('#modal-overlay').addEventListener('click', e=>{ if(e.target.id==='modal-overlay') closeModal(); });
+
+/* ============================================================
+   PEDAGOGO
+   ============================================================ */
+function renderPedagogo(){
+  const main = $('#main-content');
+  const tab = STATE.activeTab;
+  const aees = STATE.users.filter(u=>u.tipo==='aee');
+  const regentes = STATE.users.filter(u=>u.tipo==='regente');
+
+  let html = `<div class="main-header"><div><h1>Painel da Coordenação</h1><div class="sub">Visão completa da rede de apoio AEE</div></div></div>`;
+
+  if(tab==='visao'){
+    const semanaAtual = STATE.index.filter(c=> isThisWeek(c.dataEnvio)).length;
+    html += `<div class="cards-row">
+      <div class="stat-card"><div class="num">${aees.length}</div><div class="label">Professores AEE</div></div>
+      <div class="stat-card"><div class="num">${regentes.length}</div><div class="label">Professores Regentes</div></div>
+      <div class="stat-card"><div class="num">${STATE.index.length}</div><div class="label">Conteúdos enviados (total)</div></div>
+      <div class="stat-card"><div class="num">${semanaAtual}</div><div class="label">Enviados nesta semana</div></div>
+    </div>`;
+    html += `<div class="panel"><div class="panel-head"><h3>Últimos conteúdos recebidos</h3></div>`;
+    html += renderConteudoTable(STATE.index.slice().sort(sortByDateDesc).slice(0,8), true);
+    html += `</div>`;
   }
+
+  if(tab==='aees'){
+    html += `<div class="panel"><div class="panel-head">
+        <h3>Professores AEE cadastrados</h3>
+        <button class="btn btn-accent btn-sm" onclick="openNewAeeModal()">+ Cadastrar Professor AEE</button>
+      </div>`;
+    html += aees.length ? `<table><thead><tr><th>Nome</th><th>Usuário</th><th>Regentes vinculados</th><th></th></tr></thead><tbody>` +
+      aees.map(a=>{
+        const count = regentes.filter(r=>r.aeeId===a.id).length;
+        return `<tr><td><span class="tag tag-aee">AEE</span> ${a.nome}</td><td class="mono">${a.usuario}</td><td>${count}</td>
+          <td class="row-actions"><button class="btn btn-danger btn-sm" onclick="removeUser('${a.id}')">Remover</button></td></tr>`;
+      }).join('') + `</tbody></table>` : `<div class="empty-state">Nenhum professor AEE cadastrado ainda. Cadastre o primeiro acesso acima.</div>`;
+    html += `</div>`;
+  }
+
+  if(tab==='regentes'){
+    html += `<div class="panel"><div class="panel-head"><h3>Professores Regentes cadastrados</h3><div class="count">${regentes.length} professor(es)</div></div>`;
+    html += regentes.length ? `<table><thead><tr><th>Nome</th><th>Disciplina</th><th>Turma</th><th>Vinculado ao AEE</th><th>Usuário</th><th></th></tr></thead><tbody>` +
+      regentes.map(r=>{
+        const aeeName = (STATE.users.find(u=>u.id===r.aeeId)||{}).nome || '—';
+        return `<tr><td><span class="tag tag-regente">Regente</span> ${r.nome}</td><td>${r.disciplina}</td><td>${r.turma}</td><td>${aeeName}</td><td class="mono">${r.usuario}</td>
+          <td class="row-actions"><button class="btn btn-danger btn-sm" onclick="removeUser('${r.id}')">Remover</button></td></tr>`;
+      }).join('') + `</tbody></table>` : `<div class="empty-state">Nenhum professor regente cadastrado ainda.</div>`;
+    html += `</div>`;
+  }
+
+  if(tab==='conteudos'){
+    html += renderConteudoFiltersAndTable(STATE.index, true);
+  }
+
+  main.innerHTML = html;
+}
+
+function openNewAeeModal(){
+  openModal(`
+    <h3>Cadastrar Professor(a) AEE</h3>
+    <div class="modal-sub">Cria o acesso do professor de Educação Especial.</div>
+    <div class="field"><label>Nome completo</label><input id="m-nome" placeholder="Ex: Maria Souza"></div>
+    <div class="field"><label>Usuário de acesso</label><input id="m-usuario" placeholder="Ex: maria.aee"></div>
+    <div class="field"><label>Senha</label><input id="m-senha" type="text" placeholder="Defina uma senha"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNewAee()">Cadastrar</button>
+    </div>
+  `);
+}
+async function saveNewAee(){
+  const nome = $('#m-nome').value.trim();
+  const usuario = $('#m-usuario').value.trim();
+  const senha = $('#m-senha').value;
+  if(!nome||!usuario||!senha){ showToast('Preencha todos os campos.'); return; }
+  if(STATE.users.some(u=>u.usuario.toLowerCase()===usuario.toLowerCase())){ showToast('Esse usuário já existe.'); return; }
+  STATE.users.push({id:uid(), tipo:'aee', nome, usuario, senha});
+  await saveUsers();
+  closeModal(); showToast('Professor(a) AEE cadastrado(a).'); render();
+}
+
+async function removeUser(id){
+  if(!confirm('Remover este cadastro? Essa ação não pode ser desfeita.')) return;
+  STATE.users = STATE.users.filter(u=>u.id!==id);
+  await saveUsers();
+  showToast('Cadastro removido.');
+  render();
+}
+
+/* ============================================================
+   PROFESSOR AEE
+   ============================================================ */
+function renderAEE(){
+  const main = $('#main-content');
+  const u = STATE.session;
+  const tab = STATE.activeTab;
+  const meusRegentes = STATE.users.filter(r=>r.tipo==='regente' && r.aeeId===u.id);
+
+  let html = `<div class="main-header"><div><h1>Painel AEE</h1><div class="sub">Olá, ${u.nome}</div></div></div>`;
+
+  if(tab==='regentes-aee'){
+    html += `<div class="panel"><div class="panel-head">
+        <h3>Professores regentes que trabalham com você</h3>
+        <button class="btn btn-accent btn-sm" onclick="openNewRegenteModal()">+ Inserir professor regente</button>
+      </div>`;
+    html += meusRegentes.length ? `<table><thead><tr><th>Nome</th><th>Disciplina</th><th>Turma</th><th>Usuário</th><th></th></tr></thead><tbody>` +
+      meusRegentes.map(r=>`<tr><td>${r.nome}</td><td>${r.disciplina}</td><td>${r.turma}</td><td class="mono">${r.usuario}</td>
+        <td class="row-actions"><button class="btn btn-danger btn-sm" onclick="removeUser('${r.id}')">Remover</button></td></tr>`).join('')
+      + `</tbody></table>` : `<div class="empty-state">Você ainda não inseriu nenhum professor regente. Clique em "Inserir professor regente" para escolher a disciplina e a turma.</div>`;
+    html += `</div>`;
+  }
+
+  if(tab==='conteudos-aee'){
+    const meusIds = meusRegentes.map(r=>r.id);
+    const conteudos = STATE.index.filter(c=>meusIds.includes(c.regenteId));
+    html += renderConteudoFiltersAndTable(conteudos, false);
+  }
+
+  main.innerHTML = html;
+}
+
+function openNewRegenteModal(){
+  openModal(`
+    <h3>Inserir Professor Regente</h3>
+    <div class="modal-sub">Escolha a disciplina e a turma em que ele(a) leciona e crie o acesso dele(a).</div>
+    <div class="field"><label>Nome completo</label><input id="m-nome" placeholder="Ex: João Pereira"></div>
+    <div class="field"><label>Disciplina</label>
+      <select id="m-disciplina">
+        <option>Língua Portuguesa</option><option>Matemática</option><option>Ciências</option>
+        <option>História</option><option>Geografia</option><option>Artes</option>
+        <option>Educação Física</option><option>Inglês</option><option>Outra</option>
+      </select>
+    </div>
+    <div class="field"><label>Turma</label><input id="m-turma" placeholder="Ex: 6º Ano B"></div>
+    <div class="field"><label>Usuário de acesso</label><input id="m-usuario" placeholder="Ex: joao.regente"></div>
+    <div class="field"><label>Senha</label><input id="m-senha" type="text" placeholder="Defina uma senha"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNewRegente()">Inserir professor</button>
+    </div>
+  `);
+}
+async function saveNewRegente(){
+  const nome = $('#m-nome').value.trim();
+  const disciplina = $('#m-disciplina').value;
+  const turma = $('#m-turma').value.trim();
+  const usuario = $('#m-usuario').value.trim();
+  const senha = $('#m-senha').value;
+  if(!nome||!turma||!usuario||!senha){ showToast('Preencha todos os campos.'); return; }
+  if(STATE.users.some(u=>u.usuario.toLowerCase()===usuario.toLowerCase())){ showToast('Esse usuário já existe.'); return; }
+  STATE.users.push({id:uid(), tipo:'regente', nome, disciplina, turma, usuario, senha, aeeId: STATE.session.id});
+  await saveUsers();
+  closeModal(); showToast('Professor regente inserido.'); render();
+}
+
+/* ============================================================
+   PROFESSOR REGENTE
+   ============================================================ */
+function renderRegente(){
+  const main = $('#main-content');
+  const u = STATE.session;
+  const tab = STATE.activeTab;
+  const aee = STATE.users.find(x=>x.id===u.aeeId);
+  const meusEnvios = STATE.index.filter(c=>c.regenteId===u.id).sort(sortByDateDesc);
+
+  let html = `<div class="regente-hero">
+      <div class="mono">CONTEÚDO SEMANAL</div>
+      <h2>Olá, ${u.nome}</h2>
+      <div class="info-grid">
+        <div><div class="k">Disciplina</div><div class="v">${u.disciplina}</div></div>
+        <div><div class="k">Turma</div><div class="v">${u.turma}</div></div>
+        <div><div class="k">Professor(a) AEE</div><div class="v">${aee ? aee.nome : '—'}</div></div>
+      </div>
+    </div>`;
+
+  if(tab==='enviar'){
+    html += `<div class="panel">
+      <div class="panel-head"><h3>Enviar conteúdo da semana</h3></div>
+      <div class="field"><label>Semana (início)</label><input type="date" id="f-semana"></div>
+      <div class="field"><label>Título / tema da semana</label><input id="f-titulo" placeholder="Ex: Frações — introdução"></div>
+      <div class="field"><label>Conteúdo aplicado (descrição)</label><textarea id="f-desc" rows="4" placeholder="Descreva o conteúdo, atividades e observações relevantes para o AEE"></textarea></div>
+      <div class="field">
+        <label>Anexar arquivo (opcional — até 2MB)</label>
+        <div class="file-drop">
+          <input type="file" id="f-arquivo">
+          <div id="f-arquivo-chip"></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="submitConteudo()">Enviar para o AEE</button>
+    </div>`;
+  }
+
+  if(tab==='meus-envios'){
+    html += `<div class="panel"><div class="panel-head"><h3>Histórico de envios</h3><div class="count">${meusEnvios.length} envio(s)</div></div>`;
+    html += meusEnvios.length ? `<div class="folder-list">` + meusEnvios.map(c=>`
+      <div class="folder-item">
+        <div class="folder-week mono">${formatDate(c.semana)}</div>
+        <div class="folder-info">
+          <div class="title">${c.titulo}</div>
+          <div class="desc">${c.descricao||''}</div>
+          <div class="meta">enviado em ${formatDateTime(c.dataEnvio)} ${c.fileName ? '· 📎 '+c.fileName : ''}</div>
+        </div>
+        ${c.fileName ? `<button class="btn btn-ghost btn-sm" onclick="downloadFile('${c.id}')">Baixar</button>` : ''}
+      </div>`).join('') + `</div>` : `<div class="empty-state">Você ainda não enviou nenhum conteúdo.</div>`;
+    html += `</div>`;
+  }
+
+  main.innerHTML = html;
+
+  if(tab==='enviar'){
+    $('#f-semana').valueAsDate = mondayOfCurrentWeek();
+    $('#f-arquivo').addEventListener('change', e=>{
+      const f = e.target.files[0];
+      const chip = $('#f-arquivo-chip');
+      if(!f){ chip.innerHTML=''; return; }
+      if(f.size > 2*1024*1024){
+        chip.innerHTML = `<span class="file-chip" style="background:#F3E4E0;color:#B5533C;">Arquivo maior que 2MB — escolha outro</span>`;
+        e.target.value='';
+        return;
+      }
+      chip.innerHTML = `<span class="file-chip">📎 ${f.name}</span>`;
+    });
+  }
+}
+
+async function submitConteudo(){
+  const semana = $('#f-semana').value;
+  const titulo = $('#f-titulo').value.trim();
+  const descricao = $('#f-desc').value.trim();
+  const fileInput = $('#f-arquivo');
+  const file = fileInput.files[0];
+
+  if(!semana || !titulo || !descricao){ showToast('Preencha semana, título e descrição.'); return; }
+
+  const u = STATE.session;
+  const id = uid();
+  const meta = {
+    id, regenteId:u.id, regenteNome:u.nome, aeeId:u.aeeId,
+    disciplina:u.disciplina, turma:u.turma,
+    semana, titulo, descricao,
+    fileName: file ? file.name : null,
+    fileType: file ? file.type : null,
+    dataEnvio: new Date().toISOString()
+  };
+
+  if(file){
+    const dataUrl = await readFileAsDataUrl(file);
+    const ok = await saveFile(id, dataUrl);
+    if(!ok) return;
+  }
+
+  STATE.index.push(meta);
+  await saveIndex();
+  showToast('Conteúdo enviado ao AEE!');
+  STATE.activeTab = 'meus-envios';
+  $$('.nav-item').forEach(x=>x.classList.toggle('active', x.dataset.tab==='meus-envios'));
+  render();
+}
+
+function readFileAsDataUrl(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=>resolve(r.result);
+    r.onerror = ()=>reject(new Error('Falha ao ler arquivo'));
+    r.readAsDataURL(file);
+  });
+}
+
+async function downloadFile(id){
+  const item = STATE.index.find(c=>c.id===id);
+  if(!item || !item.fileName){ return; }
+  const dataUrl = await getFile(id);
+  if(!dataUrl){ showToast('Arquivo não encontrado.'); return; }
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = item.fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+/* ============================================================
+   Tabela de conteúdos (compartilhada AEE/Pedagogo)
+   ============================================================ */
+function renderConteudoFiltersAndTable(list, showTurmaFilter){
+  const turmas = Array.from(new Set(list.map(c=>c.turma))).sort();
+  const disciplinas = Array.from(new Set(list.map(c=>c.disciplina))).sort();
+  const filtersHtml = `<div class="filters-row">
+      <select id="filt-turma"><option value="">Todas as turmas</option>${turmas.map(t=>`<option value="${t}">${t}</option>`).join('')}</select>
+      <select id="filt-disciplina"><option value="">Todas as disciplinas</option>${disciplinas.map(d=>`<option value="${d}">${d}</option>`).join('')}</select>
+      <input type="text" id="filt-busca" placeholder="Buscar por título ou professor...">
+    </div>`;
+  const html = `<div class="panel">
+      <div class="panel-head"><h3>Conteúdos enviados</h3><div class="count">${list.length} registro(s)</div></div>
+      ${filtersHtml}
+      <div id="conteudo-table-wrap">${renderConteudoTable(list.slice().sort(sortByDateDesc))}</div>
+    </div>`;
+
   setTimeout(()=>{
-    closeModal('checkout-modal');
-    checkMissionProgress();
-  }, 1400);
+    const apply = ()=>{
+      const t = $('#filt-turma').value, d = $('#filt-disciplina').value, q = $('#filt-busca').value.toLowerCase();
+      const filtered = list.filter(c =>
+        (!t || c.turma===t) && (!d || c.disciplina===d) &&
+        (!q || c.titulo.toLowerCase().includes(q) || c.regenteNome.toLowerCase().includes(q))
+      ).sort(sortByDateDesc);
+      $('#conteudo-table-wrap').innerHTML = renderConteudoTable(filtered);
+    };
+    $('#filt-turma').addEventListener('change', apply);
+    $('#filt-disciplina').addEventListener('change', apply);
+    $('#filt-busca').addEventListener('input', apply);
+  }, 0);
+
+  return html;
 }
 
-function finalizePurchase(total){
-  GameState.wallet -= total;
-  GameState.moneySpentTotal += total;
-  GameState.currentMissionStats.spent += total;
-  if(total <= 10) GameState._boughtUnder10 = true;
-  if(currentMission().type === 'budget' && total <= 30) GameState._budgetDone = true;
-  GameState.cart = [];
-  renderCartPanel();
-  updateHUD();
-  saveState();
-  spawnConfetti(0.5);
+function renderConteudoTable(list, compact){
+  if(!list.length) return `<div class="empty-state">Nenhum conteúdo encontrado.</div>`;
+  return `<table><thead><tr>
+      <th>Semana</th><th>Título</th><th>Professor</th><th>Turma</th><th>Disciplina</th><th></th>
+    </tr></thead><tbody>` +
+    list.map(c=>`<tr>
+        <td class="mono">${formatDate(c.semana)}</td>
+        <td><strong>${c.titulo}</strong>${!compact ? `<div style="color:var(--muted);font-size:12.5px;margin-top:3px;">${c.descricao||''}</div>` : ''}</td>
+        <td>${c.regenteNome}</td>
+        <td>${c.turma}</td>
+        <td>${c.disciplina}</td>
+        <td>${c.fileName ? `<button class="btn btn-ghost btn-sm" onclick="downloadFile('${c.id}')">Baixar 📎</button>` : ''}</td>
+      </tr>`).join('') +
+    `</tbody></table>`;
 }
 
-/* ========================= 15. DESAFIO MATEMÁTICO (UI) ======================== */
-let currentChallenge = null, challengeAnswered = false;
-function openChallengeModal(){
-  currentChallenge = MathBank.next();
-  challengeAnswered = false;
-  document.getElementById('challenge-question').textContent = currentChallenge.text;
-  document.getElementById('challenge-level-badge').textContent = currentChallenge.money ? 'DESAFIO DE COMPRAS' : `NÍVEL ${currentChallenge.level}`;
-  document.getElementById('challenge-feedback').textContent = '';
-  const hintText = document.getElementById('challenge-hint-text');
-  hintText.style.display = 'none';
-  hintText.textContent = currentChallenge.hint || '';
-
-  const optsEl = document.getElementById('challenge-options');
-  optsEl.innerHTML = '';
-  currentChallenge.options.forEach((opt, idx)=>{
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.textContent = opt;
-    btn.addEventListener('click', ()=> answerChallenge(idx, btn));
-    optsEl.appendChild(btn);
-  });
-  openModal('challenge-modal');
+/* ---------- utils ---------- */
+function sortByDateDesc(a,b){ return new Date(b.dataEnvio) - new Date(a.dataEnvio); }
+function formatDate(iso){ if(!iso) return '—'; const d = new Date(iso+'T00:00:00'); return d.toLocaleDateString('pt-BR'); }
+function formatDateTime(iso){ const d = new Date(iso); return d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+function mondayOfCurrentWeek(){
+  const d = new Date(); const day = d.getDay();
+  const diff = d.getDate() - day + (day===0 ? -6 : 1);
+  return new Date(d.setDate(diff));
+}
+function isThisWeek(iso){
+  if(!iso) return false;
+  const d = new Date(iso);
+  const now = new Date();
+  const start = mondayOfCurrentWeek();
+  start.setHours(0,0,0,0);
+  const end = new Date(start); end.setDate(end.getDate()+7);
+  return d >= start && d < end;
 }
 
-document.getElementById('challenge-hint-btn').addEventListener('click', ()=>{
-  document.getElementById('challenge-hint-text').style.display = 'block';
-});
-
-function answerChallenge(idx, btnEl){
-  if(challengeAnswered) return;
-  challengeAnswered = true;
-  const correct = idx === currentChallenge.correctIndex;
-  const buttons = document.querySelectorAll('#challenge-options .opt-btn');
-  buttons.forEach((b,i)=>{
-    if(i === currentChallenge.correctIndex) b.classList.add('correct');
-    else if(i===idx && !correct) b.classList.add('wrong');
-  });
-  const fb = document.getElementById('challenge-feedback');
-  GameState.currentMissionStats.answered++;
-
-  if(correct){
-    GameState.correctCount++;
-    GameState.currentMissionStats.correct++;
-    GameState.streak++;
-    let reward = 5;
-    let bonus = 0;
-    if(GameState.streak > 0 && GameState.streak % 3 === 0){ bonus = 20; showToast(`🔥 ${GameState.streak} acertos seguidos! +${bonus} pontos bônus`, 'streak'); }
-    GameState.wallet += reward;
-    GameState.moneyEarnedTotal += reward;
-    GameState.currentMissionStats.earned += reward;
-    GameState.points += 10 + bonus;
-    fb.textContent = '🎉 Muito bem! Você acertou!';
-    showToast(`+R$ ${reward}`, 'money');
-    showToast(`+${10+bonus} pontos`, 'points');
-    Audio1.correct(); Audio1.coin();
-    triggerCelebration();
-    adaptDifficulty(true);
-    updateHUD();
-    saveState();
-    setTimeout(()=>{ closeModal('challenge-modal'); checkMissionProgress(); }, 1100);
-  } else {
-    GameState.wrongCount++;
-    GameState.currentMissionStats.wrong++;
-    GameState.streak = 0;
-    fb.textContent = '💡 Quase! Vamos tentar de novo.';
-    Audio1.wrong();
-    adaptDifficulty(false);
-    document.getElementById('challenge-hint-text').style.display = 'block';
-    setTimeout(()=>{
-      challengeAnswered = false;
-      buttons.forEach(b=>b.classList.remove('wrong','correct'));
-      fb.textContent = '';
-    }, 1100);
-  }
-}
-
-function adaptDifficulty(gotCorrect){
-  if(gotCorrect){
-    GameState._correctStreakForDiff = (GameState._correctStreakForDiff||0)+1;
-    if(GameState._correctStreakForDiff >= 3 && GameState.difficultyLevel < 6){
-      GameState.difficultyLevel++; GameState._correctStreakForDiff = 0;
-    }
-  } else {
-    GameState._correctStreakForDiff = 0;
-    if(GameState.difficultyLevel > 1) GameState.difficultyLevel--;
-  }
-}
-
-/* ============================== 16. HUD / MINIMAPA ============================ */
-function updateHUD(){
-  document.getElementById('hud-wallet').textContent = `R$ ${GameState.wallet}`;
-  document.getElementById('hud-points').textContent = GameState.points;
-}
-function updateMissionHUD(){
-  const m = currentMission();
-  document.getElementById('mission-label').textContent = `📋 Missão ${GameState.missionIndex+1}/${MISSIONS.length}`;
-  let progress = 0;
-  if(m.type==='answer_count') progress = Math.min(1, GameState.currentMissionStats.correct/3);
-  else if(m.type==='buy_under') progress = GameState._boughtUnder10 ? 1:0;
-  else if(m.type==='shopping_list') progress = GameState._listComplete ? 1:0;
-  else if(m.type==='budget') progress = GameState._budgetDone ? 1:0;
-  else if(m.type==='troco') progress = GameState._trocoDone ? 1:0;
-  document.getElementById('mission-bar').style.width = (progress*100)+'%';
-}
-
-const minimapCtx = document.getElementById('minimap').getContext('2d');
-function drawMinimap(){
-  const ctx = minimapCtx, size = 130;
-  ctx.clearRect(0,0,size,size);
-  ctx.fillStyle = 'rgba(20,50,35,0.35)';
-  ctx.fillRect(0,0,size,size);
-  const scale = size / (STORE.halfW*2.3);
-  const cx = size/2, cz = size/2;
-
-  ctx.fillStyle = '#a9744f';
-  [-16,-6,4,14].forEach(x=>{
-    const sx = cx + x*scale;
-    ctx.fillRect(sx-2, cz-40*scale, 4, 80*scale);
-  });
-
-  interactables.forEach(it=>{
-    if(it.hidden) return;
-    const sx = cx + it.mesh.position.x*scale, sz = cz + it.mesh.position.z*scale;
-    ctx.fillStyle = it.type==='challenge' ? '#3a86ff' : it.type==='checkout' ? '#ff9f1c' : it.type==='cart_pickup' ? '#ffffff' : '#2ec4b6';
-    ctx.beginPath(); ctx.arc(sx, sz, it.type==='product'?1.6:3, 0, Math.PI*2); ctx.fill();
-  });
-
-  const px = cx + Player.x*scale, pz = cz + Player.z*scale;
-  ctx.save();
-  ctx.translate(px,pz); ctx.rotate(Player.yaw);
-  ctx.fillStyle = '#ffd23f';
-  ctx.beginPath();
-  ctx.moveTo(0,-6); ctx.lineTo(4,5); ctx.lineTo(-4,5); ctx.closePath(); ctx.fill();
-  ctx.restore();
-}
-
-/* ============================== 17. CONFETE ================================= */
-const confettiCanvas = document.getElementById('confetti-canvas');
-const cctx = confettiCanvas.getContext('2d');
-let confettiPieces = [];
-function spawnConfetti(scale){
-  scale = scale||1;
-  confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight;
-  confettiCanvas.style.display = 'block';
-  const colors = ['#ff9f1c','#ffd23f','#3a86ff','#2ec4b6','#ef4444'];
-  for(let i=0;i<Math.floor(70*scale);i++){
-    confettiPieces.push({
-      x: Math.random()*confettiCanvas.width, y: -20-Math.random()*200,
-      vx: (Math.random()-0.5)*2, vy: 2+Math.random()*3,
-      size: 5+Math.random()*6, color: colors[Math.floor(Math.random()*colors.length)],
-      rot: Math.random()*Math.PI, vr: (Math.random()-0.5)*0.3, life: 0
-    });
-  }
-  if(!confettiRunning){ confettiRunning = true; requestAnimationFrame(runConfetti); }
-}
-let confettiRunning = false;
-function runConfetti(){
-  cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
-  confettiPieces.forEach(p=>{
-    p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
-    cctx.save(); cctx.translate(p.x,p.y); cctx.rotate(p.rot);
-    cctx.fillStyle = p.color; cctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
-    cctx.restore();
-  });
-  confettiPieces = confettiPieces.filter(p => p.y < confettiCanvas.height+30 && p.life < 400);
-  if(confettiPieces.length>0){ requestAnimationFrame(runConfetti); }
-  else { confettiRunning = false; confettiCanvas.style.display='none'; }
-}
-
-/* ============================== 18. UI GERAL ================================= */
-function openModal(id){ document.getElementById(id).classList.add('show'); }
-function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-function isAnyModalOpen(){
-  return document.querySelectorAll('.modal-overlay.show').length > 0 || document.getElementById('cart-panel').classList.contains('show');
-}
-
-document.querySelectorAll('[data-close]').forEach(btn=>{
-  btn.addEventListener('click', ()=> closeModal(btn.dataset.close));
-});
-
-function showToast(text, kind){
-  const container = document.getElementById('toast-container');
-  const el = document.createElement('div');
-  el.className = `toast ${kind||'info'}`;
-  el.textContent = text;
-  container.appendChild(el);
-  setTimeout(()=>{ el.remove(); }, 2100);
-}
-
-/* --- Missão completa modal --- */
-function openMissionCompleteModal(m){
-  document.getElementById('mc-title').textContent = `🎉 ${m.title.split('—')[1]||'Missão Concluída!'}`;
-  document.getElementById('mc-answered').textContent = GameState.currentMissionStats.answered;
-  document.getElementById('mc-correct').textContent = GameState.currentMissionStats.correct;
-  document.getElementById('mc-wrong').textContent = GameState.currentMissionStats.wrong;
-  document.getElementById('mc-earned').textContent = `R$ ${GameState.currentMissionStats.earned + m.reward}`;
-  document.getElementById('mc-spent').textContent = `R$ ${GameState.currentMissionStats.spent}`;
-  document.getElementById('mc-balance').textContent = `R$ ${GameState.wallet}`;
-  document.getElementById('btn-next-mission').style.display = (GameState.missionIndex < MISSIONS.length-1) ? 'block' : 'none';
-  openModal('mission-complete-modal');
-}
-document.getElementById('btn-next-mission').addEventListener('click', ()=>{
-  closeModal('mission-complete-modal');
-  advanceMission();
-});
-document.getElementById('btn-replay-mission').addEventListener('click', ()=>{
-  closeModal('mission-complete-modal');
-});
-function advanceMission(){
-  if(GameState.missionIndex < MISSIONS.length-1){
-    GameState.missionIndex++;
-    resetMissionStats();
-    GameState._boughtUnder10=false; GameState._listComplete=false; GameState._budgetDone=false; GameState._trocoDone=false;
-    saveState();
-    checkUnlocks();
-    updateMissionHUD();
-    showToast(currentMission().title.split('—')[1] || currentMission().title, 'info');
-  }
-}
-
-function checkUnlocks(){
-  if(GameState.wallet>=20 && !GameState.unlocked.cart2){ GameState.unlocked.cart2=true; showToast('🔓 R$20 — Novo carrinho desbloqueado!','info'); }
-  if(GameState.wallet>=40 && !GameState.unlocked.outfit){ GameState.unlocked.outfit=true; avatarParts.shirtMat.color.set(0xff9f1c); showToast('🔓 R$40 — Nova roupa para o avatar!','info'); }
-  if(GameState.wallet>=60 && !GameState.unlocked.area){ GameState.unlocked.area=true; showToast('🔓 R$60 — Nova área do supermercado!','info'); }
-  if(GameState.wallet>=100 && !GameState.unlocked.special){ GameState.unlocked.special=true; showToast('🔓 R$100 — Missão especial desbloqueada!','info'); }
-}
-
-/* --- Insuficiente --- */
-document.getElementById('btn-back-to-challenges').addEventListener('click', ()=>{
-  closeModal('insufficient-modal');
-});
-
-/* --- Carrinho painel --- */
-document.getElementById('btn-close-cart').addEventListener('click', closeCartPanel);
-document.getElementById('btn-cart-desktop').addEventListener('click', openCartPanel);
-
-/* --- Achievements --- */
-function renderAchievements(){
-  const list = document.getElementById('achievements-list');
-  const items = [
-    { done: GameState.wallet>=20 || GameState.unlocked.cart2, label:'💰 Juntar R$ 20' },
-    { done: GameState.wallet>=40 || GameState.unlocked.outfit, label:'👕 Juntar R$ 40' },
-    { done: GameState.wallet>=60 || GameState.unlocked.area, label:'🏪 Juntar R$ 60' },
-    { done: GameState.wallet>=100 || GameState.unlocked.special, label:'⭐ Juntar R$ 100' },
-    { done: GameState.missionIndex>=1, label:'📋 Concluir a Missão 1' },
-    { done: GameState.missionIndex>=4, label:'🏆 Concluir todas as missões' },
-    { done: GameState.streak>=3, label:'🔥 3 acertos seguidos' },
-  ];
-  list.innerHTML = items.map(i=>`<div class="tuto-block" style="opacity:${i.done?1:0.45}"><span class="k">${i.done?'✅':'🔒'}</span>${i.label}</div>`).join('');
-}
-
-/* --- Botões da tela inicial e modais --- */
-document.getElementById('btn-howto').addEventListener('click', ()=>{
-  document.getElementById('tuto-desktop').style.display = IS_MOBILE ? 'none':'block';
-  document.getElementById('tuto-mobile').style.display = IS_MOBILE ? 'block':'none';
-  openModal('tutorial-modal');
-});
-document.getElementById('btn-achievements').addEventListener('click', ()=>{ renderAchievements(); openModal('achievements-modal'); });
-document.getElementById('btn-settings').addEventListener('click', ()=> openModal('settings-modal'));
-document.getElementById('btn-settings-ingame').addEventListener('click', ()=> openModal('settings-modal'));
-document.getElementById('toggle-sound').addEventListener('click', (e)=>{
-  GameState.soundOn = !GameState.soundOn;
-  e.target.textContent = GameState.soundOn ? 'LIGADO' : 'DESLIGADO';
-  saveState();
-});
-document.getElementById('btn-reset').addEventListener('click', ()=>{
-  if(confirm('Reiniciar todo o progresso do jogo?')){
-    localStorage.removeItem('missao-supermercado-save');
-    location.reload();
-  }
-});
-
-document.getElementById('btn-start').addEventListener('click', startGame);
-
-function startGame(){
-  document.getElementById('start-screen').style.display = 'none';
-  document.getElementById('hud').style.display = 'flex';
-  GameState.gameStarted = true;
-  resetMissionStats();
-  updateMissionHUD();
-  updateHUD();
-  Audio1.coin();
-}
-
-/* ============================== 19. LOOP PRINCIPAL ============================= */
-function animate(){
-  requestAnimationFrame(animate);
-  if(!GameState.gameStarted){ renderer && renderer.render(scene, camera); return; }
-  const dt = Math.min(0.05, clock.getDelta());
-  const moving = moveAvatar(dt);
-  updateAvatarAnimation(dt, moving);
-  updateCamera();
-  updateInteractables(dt);
-  drawMinimap();
-  renderer.render(scene, camera);
-}
-
-/* ============================== 20. INICIALIZAÇÃO ============================= */
-function boot(){
-  loadState();
-  const bar = document.getElementById('loading-bar');
-  let pct = 0;
-  const iv = setInterval(()=>{
-    pct += 18 + Math.random()*20;
-    bar.style.width = Math.min(100,pct)+'%';
-    if(pct>=100){
-      clearInterval(iv);
-      setTimeout(()=>{
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('start-screen').style.display = 'flex';
-        document.getElementById('toggle-sound').textContent = GameState.soundOn ? 'LIGADO':'DESLIGADO';
-        if(IS_MOBILE){ document.getElementById('orientation-overlay').classList.add('mobile-active'); }
-      }, 150);
-    }
-  }, 90);
-
-  initScene();
-  if(IS_MOBILE){ setupMobileControls(); } else { setupDesktopControls(); }
-  resetMissionStats();
-  updateMissionHUD();
-  animate();
-}
-boot();
+/* ---------- init ---------- */
+(async function init(){
+  initLoginUI();
+  await loadData();
+})();
 </script>
 </body>
 </html>
