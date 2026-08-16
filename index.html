@@ -650,22 +650,49 @@ function onResize(){
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+function hexLuminance(hex){
+  const c = hex.replace('#','');
+  const r = parseInt(c.substring(0,2),16), g = parseInt(c.substring(2,4),16), b = parseInt(c.substring(4,6),16);
+  return (0.299*r + 0.587*g + 0.114*b)/255;
+}
 function makeLabelSprite(text, bg, fg){
   const canvas = document.createElement('canvas');
   canvas.width = 256; canvas.height = 128;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = bg || '#ffffff';
+  const bgColor = bg || '#ffffff';
+  ctx.fillStyle = bgColor;
   roundRect(ctx, 4,4,248,120,24); ctx.fill();
+  const topColor = hexLuminance(bgColor) > 0.6 ? '#1b3a2f' : '#ffffff';
   ctx.font = '700 40px Nunito, sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillStyle = topColor;
   ctx.fillText(text.split(' ')[0], 128, 46);
   ctx.font = '800 26px Nunito, sans-serif';
-  ctx.fillStyle = fg || '#1b3a2f';
+  ctx.fillStyle = fg || topColor;
   ctx.fillText(text.split(' ').slice(1).join(' '), 128, 92);
   const tex = new THREE.CanvasTexture(canvas);
   const mat = new THREE.SpriteMaterial({ map:tex, transparent:true });
   const spr = new THREE.Sprite(mat);
   spr.scale.set(1.6,0.8,1);
+  return spr;
+}
+function makeSectionSign(name, bgHex){
+  const canvas = document.createElement('canvas');
+  canvas.width = 512; canvas.height = 200;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = bgHex;
+  roundRect(ctx, 4,4,504,192,30); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 8;
+  roundRect(ctx, 8,8,496,184,26); ctx.stroke();
+  const textColor = hexLuminance(bgHex) > 0.6 ? '#1b3a2f' : '#ffffff';
+  ctx.fillStyle = textColor;
+  ctx.font = '800 76px "Baloo 2", Nunito, sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(name.toUpperCase(), 256, 104);
+  const tex = new THREE.CanvasTexture(canvas);
+  const mat = new THREE.SpriteMaterial({ map:tex, transparent:true });
+  const spr = new THREE.Sprite(mat);
+  spr.scale.set(3.4,1.35,1);
   return spr;
 }
 function roundRect(ctx,x,y,w,h,r){
@@ -718,7 +745,7 @@ function buildStore(){
   buildAisle('Frutas', -16, 0xf6c453);
   buildAisle('Bebidas', -6, 0x9fd8cb);
   buildAisle('Alimentos', 4, 0xf3b8a0);
-  buildAisle('Higiene', 14, 0xa8d0e6);
+  buildAisle('Limpeza', 14, 0xa8d0e6);
 
   buildProducts();
   buildChallengeStations();
@@ -749,9 +776,13 @@ function buildAisle(name, x, color){
   }
 
   // Placa de setor
-  const sign = makeLabelSprite(name+' ', '#'+color.toString(16).padStart(6,'0'), '#1b3a2f');
-  sign.position.set(x, 3.6, -9.6);
+  const sign = makeSectionSign(name, '#'+color.toString(16).padStart(6,'0'));
+  sign.position.set(x, 3.7, -9.6);
   scene.add(sign);
+  // Segunda placa do outro lado do corredor, pra ficar visível vindo de qualquer direção
+  const sign2 = makeSectionSign(name, '#'+color.toString(16).padStart(6,'0'));
+  sign2.position.set(x, 3.7, 8.6);
+  scene.add(sign2);
 }
 
 /* ---- PRODUTOS (marcadores interativos) ---- */
