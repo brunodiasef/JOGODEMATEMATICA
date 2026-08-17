@@ -151,6 +151,7 @@ button{font-family:var(--font-display); cursor:pointer; border:none;}
   font-weight:700; font-size:13px; color:var(--texto-escuro); cursor:pointer;
 }
 .hair-opt.selected{background:var(--verde-fundo); border-color:var(--verde-fundo); color:#fff;}
+.hair-opt.disabled{opacity:0.35; pointer-events:none; text-decoration:line-through;}
 #customize-hint{font-size:13px; color:#8a8a8a; text-align:center; margin-top:6px; font-weight:600;}
 
 /* ---------- CARRINHO PAINEL ---------- */
@@ -955,7 +956,7 @@ const Player = {
   x: 0, z: 13, yaw: 0, speed: 5.2, moving:false, cartMesh:null
 };
 
-const HAIR_TYPES = ['curto','cacheado','moicano','careca','trancas'];
+const HAIR_TYPES = ['curto','cacheado','moicano','careca','trancas','longo'];
 
 function buildAvatar(){
   avatar = new THREE.Group();
@@ -1016,6 +1017,23 @@ function buildAvatar(){
     trancas.add(braid);
   });
   hairGroup.add(trancas); hairMeshes.trancas = trancas;
+
+  const longo = new THREE.Group();
+  const longoCap = new THREE.Mesh(new THREE.SphereGeometry(0.29,16,16,0,Math.PI*2,0,Math.PI*0.55), hairMat);
+  longoCap.position.y = 0.08;
+  longo.add(longoCap);
+  const longoBack = new THREE.Mesh(new THREE.ConeGeometry(0.27,0.62,14,1,true), hairMat);
+  longoBack.rotation.x = Math.PI;
+  longoBack.position.set(0,-0.24,-0.03);
+  longoBack.scale.set(1,1,0.75);
+  longo.add(longoBack);
+  [-1,1].forEach(side=>{
+    const lock = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.035,0.5,8), hairMat);
+    lock.position.set(side*0.24,-0.16,0.08);
+    lock.rotation.z = side*0.08;
+    longo.add(lock);
+  });
+  hairGroup.add(longo); hairMeshes.longo = longo;
 
   avatarParts.hairGroup = hairGroup;
   avatarParts.hairMeshes = hairMeshes;
@@ -1078,6 +1096,10 @@ function applyBodyType(type){
     avatarParts.legL.material = mat; avatarParts.legR.material = mat;
     const scale = isMenina ? 0.82 : 1;
     avatarParts.legL.scale.set(scale,1,scale); avatarParts.legR.scale.set(scale,1,scale);
+  }
+  // "Carequinha" e "Moicano" não ficam disponíveis pra avatar menina
+  if(isMenina && (GameState.avatarCustom.hairType==='careca' || GameState.avatarCustom.hairType==='moicano')){
+    applyHairType('longo');
   }
   saveState();
 }
@@ -1830,7 +1852,8 @@ function updateCustomizeCamera(dt){
 const SKIN_COLORS = ['#ffe0bd','#ffd1a6','#f1c27d','#c68642','#8d5524','#5c3a21'];
 const SHIRT_COLORS = ['#3a86ff','#ff9f1c','#ef4444','#2ec4b6','#a855f7','#ffd23f','#111827','#ffffff'];
 const HAIR_COLORS = ['#1b1b1b','#4a2c19','#7a4b21','#d9a066','#e63946','#3a86ff','#ff6fb0','#f4f4f4'];
-const HAIR_LABELS = { curto:'✂️ Curto', cacheado:'🌀 Cacheado', moicano:'🎸 Moicano', careca:'😎 Carequinha', trancas:'🎀 Tranças' };
+const HAIR_LABELS = { curto:'✂️ Curto', cacheado:'🌀 Cacheado', moicano:'🎸 Moicano', careca:'😎 Carequinha', trancas:'🎀 Tranças', longo:'💇 Longo' };
+const HAIR_DISABLED_FOR_MENINA = ['careca','moicano'];
 
 function initCustomizeUI(){
   const skinRow = document.getElementById('swatch-skin');
@@ -1859,7 +1882,10 @@ function initCustomizeUI(){
   HAIR_TYPES.forEach(type=>{
     const el = document.createElement('div');
     el.className = 'hair-opt'; el.textContent = HAIR_LABELS[type]; el.dataset.type = type;
-    el.addEventListener('click', ()=>{ applyHairType(type); updateCustomizeSelections(); Audio1.click(); });
+    el.addEventListener('click', ()=>{
+      if(el.classList.contains('disabled')) return;
+      applyHairType(type); updateCustomizeSelections(); Audio1.click();
+    });
     hairOptRow.appendChild(el);
   });
 
@@ -1878,7 +1904,11 @@ function updateCustomizeSelections(){
   document.querySelectorAll('#swatch-skin .swatch').forEach(el=> el.classList.toggle('selected', el.dataset.hex===cz.skin));
   document.querySelectorAll('#swatch-shirt .swatch').forEach(el=> el.classList.toggle('selected', el.dataset.hex===cz.shirt));
   document.querySelectorAll('#swatch-hair .swatch').forEach(el=> el.classList.toggle('selected', el.dataset.hex===cz.hairColor));
-  document.querySelectorAll('#hair-options .hair-opt').forEach(el=> el.classList.toggle('selected', el.dataset.type===cz.hairType));
+  document.querySelectorAll('#hair-options .hair-opt').forEach(el=>{
+    el.classList.toggle('selected', el.dataset.type===cz.hairType);
+    const isDisabled = (cz.bodyType==='menina') && HAIR_DISABLED_FOR_MENINA.includes(el.dataset.type);
+    el.classList.toggle('disabled', isDisabled);
+  });
   document.querySelectorAll('#body-options .hair-opt').forEach(el=> el.classList.toggle('selected', el.dataset.body===(cz.bodyType||'menino')));
 }
 
