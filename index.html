@@ -122,6 +122,37 @@ button{font-family:var(--font-display); cursor:pointer; border:none;}
 #cart-btn-mobile{position:fixed; right:24px; bottom:130px; z-index:29; display:none; width:56px; height:56px; border-radius:50%; background:#fff; box-shadow:0 6px 0 #c9c2b4, 0 10px 20px rgba(0,0,0,.25); font-size:24px; align-items:center; justify-content:center;}
 .cart-badge{position:absolute; top:-6px; right:-6px; background:var(--vermelho); color:#fff; font-size:11px; font-weight:800; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; border:2px solid #fff;}
 
+/* ---------- PERSONALIZAÇÃO DO AVATAR ---------- */
+#customize-panel{
+  position:fixed; top:0; right:0; bottom:0; width:min(360px,88vw); z-index:65;
+  transform:translateX(100%); transition:transform .3s ease; display:none;
+}
+#customize-panel.show{transform:translateX(0); display:block;}
+#customize-inner{
+  position:absolute; inset:0; background:rgba(255,250,240,0.96); padding:22px 22px 30px; overflow-y:auto;
+  box-shadow:-10px 0 30px rgba(0,0,0,.35);
+}
+#customize-panel h2{font-family:var(--font-display); color:var(--verde-escuro); margin:0 0 16px; text-align:center; font-size:22px;}
+.cz-label{font-family:var(--font-display); font-weight:700; color:var(--verde-escuro); font-size:14px; margin:16px 0 8px;}
+#custom-name{
+  width:100%; padding:12px 16px; border-radius:14px; border:2px solid #e2dccb; font-size:17px; font-weight:700;
+  font-family:var(--font-body); color:var(--texto-escuro); background:#fff;
+}
+.swatch-row{display:flex; flex-wrap:wrap; gap:10px;}
+.swatch{
+  width:42px; height:42px; border-radius:50%; border:3px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.25);
+  cursor:pointer; position:relative; flex-shrink:0;
+}
+.swatch.selected{border-color:var(--laranja); box-shadow:0 0 0 3px rgba(255,159,28,.5), 0 2px 8px rgba(0,0,0,.25);}
+.swatch.selected::after{content:'✓'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; text-shadow:0 1px 2px rgba(0,0,0,.5);}
+.hair-row{display:flex; flex-wrap:wrap; gap:8px;}
+.hair-opt{
+  padding:10px 14px; border-radius:14px; background:#fff; border:2px solid #e2dccb; font-family:var(--font-display);
+  font-weight:700; font-size:13px; color:var(--texto-escuro); cursor:pointer;
+}
+.hair-opt.selected{background:var(--verde-fundo); border-color:var(--verde-fundo); color:#fff;}
+#customize-hint{font-size:13px; color:#8a8a8a; text-align:center; margin-top:6px; font-weight:600;}
+
 /* ---------- CARRINHO PAINEL ---------- */
 #cart-panel{position:fixed; top:0; right:0; bottom:0; width:min(340px,88vw); background:var(--creme); z-index:60; transform:translateX(100%); transition:transform .25s ease; box-shadow:-8px 0 24px rgba(0,0,0,.3); display:flex; flex-direction:column; padding:20px;}
 #cart-panel.show{transform:translateX(0);}
@@ -200,6 +231,7 @@ button{font-family:var(--font-display); cursor:pointer; border:none;}
   <div class="sub">Aprenda matemática brincando!</div>
   <div class="start-buttons">
     <button class="btn big" id="btn-start">▶ Começar Jogo</button>
+    <button class="btn secondary" id="btn-customize">🎨 Personalizar Avatar</button>
     <button class="btn secondary" id="btn-howto">📚 Como Jogar</button>
     <button class="btn secondary" id="btn-achievements">🏆 Conquistas</button>
     <button class="btn secondary" id="btn-settings">⚙️ Configurações</button>
@@ -245,6 +277,10 @@ button{font-family:var(--font-display); cursor:pointer; border:none;}
       <button class="btn small" id="toggle-sound">LIGADO</button>
     </div>
     <div class="tuto-block" style="justify-content:space-between;">
+      <span>🎨 Personalizar avatar</span>
+      <button class="btn small secondary" id="btn-customize-ingame">Abrir</button>
+    </div>
+    <div class="tuto-block" style="justify-content:space-between;">
       <span>🔄 Reiniciar progresso</span>
       <button class="btn small secondary" id="btn-reset">Reiniciar</button>
     </div>
@@ -287,7 +323,37 @@ button{font-family:var(--font-display); cursor:pointer; border:none;}
 <button id="interact-btn-mobile">INTERAGIR</button>
 <button id="cart-btn-mobile">🛒<span class="cart-badge" id="cart-badge-mobile" style="display:none;">0</span></button>
 
-<!-- PAINEL CARRINHO -->
+<!-- PAINEL PERSONALIZAÇÃO (avatar 3D fica visível atrás, como preview ao vivo) -->
+<div id="customize-panel">
+  <div id="customize-inner">
+    <h2>🎨 Personalize seu Avatar</h2>
+
+    <div class="cz-label" style="margin-top:0;">Tipo de avatar</div>
+    <div class="hair-row" id="body-options">
+      <div class="hair-opt" data-body="menino">🧑 Menino</div>
+      <div class="hair-opt" data-body="menina">👧 Menina</div>
+    </div>
+
+    <label class="cz-label" for="custom-name">Nome</label>
+    <input type="text" id="custom-name" maxlength="14" placeholder="Seu nome">
+
+    <div class="cz-label">Cor da pele</div>
+    <div class="swatch-row" id="swatch-skin"></div>
+
+    <div class="cz-label">Tipo de cabelo</div>
+    <div class="hair-row" id="hair-options"></div>
+
+    <div class="cz-label">Cor do cabelo</div>
+    <div class="swatch-row" id="swatch-hair"></div>
+
+    <div class="cz-label">Cor da roupa</div>
+    <div class="swatch-row" id="swatch-shirt"></div>
+
+    <button class="btn" id="btn-customize-done" style="width:100%; margin-top:18px;">✅ Concluído</button>
+    <div id="customize-hint">👀 Seu avatar aparece atrás do painel!</div>
+  </div>
+</div>
+
 <div id="cart-panel">
   <h2>🛒 Meu Carrinho</h2>
   <div id="cart-list"></div>
@@ -546,12 +612,14 @@ const GameState = {
   unlocked: { cart2:false, outfit:false, area:false, special:false },
   currentMissionStats: { answered:0, correct:0, wrong:0, earned:0, spent:0 },
   gameStarted:false,
+  customizing:false,
+  avatarCustom: { name:'Jogador', skin:'#ffd1a6', hairColor:'#4a2c19', hairType:'curto', shirt:'#3a86ff', bodyType:'menino' },
 };
 
 function saveState(){
   try{ localStorage.setItem('missao-supermercado-save', JSON.stringify({
     wallet:GameState.wallet, points:GameState.points, missionIndex:GameState.missionIndex,
-    unlocked:GameState.unlocked, soundOn:GameState.soundOn
+    unlocked:GameState.unlocked, soundOn:GameState.soundOn, avatarCustom:GameState.avatarCustom
   })); }catch(e){}
 }
 function loadState(){
@@ -560,6 +628,7 @@ function loadState(){
     if(!raw) return;
     const d = JSON.parse(raw);
     Object.assign(GameState, { wallet:d.wallet||0, points:d.points||0, missionIndex:d.missionIndex||0, unlocked:d.unlocked||GameState.unlocked, soundOn: d.soundOn!==undefined?d.soundOn:true });
+    if(d.avatarCustom) Object.assign(GameState.avatarCustom, d.avatarCustom);
   }catch(e){}
 }
 
@@ -886,13 +955,19 @@ const Player = {
   x: 0, z: 13, yaw: 0, speed: 5.2, moving:false, cartMesh:null
 };
 
+const HAIR_TYPES = ['curto','cacheado','moicano','careca','trancas'];
+
 function buildAvatar(){
   avatar = new THREE.Group();
+  const cz = GameState.avatarCustom;
 
-  const skin = new THREE.MeshStandardMaterial({ color:0xffd1a6, roughness:0.7 });
-  const shirt = new THREE.MeshStandardMaterial({ color:0x3a86ff, roughness:0.7 });
+  const skin = new THREE.MeshStandardMaterial({ color:cz.skin, roughness:0.7 });
+  const shirt = new THREE.MeshStandardMaterial({ color:cz.shirt, roughness:0.7 });
   const pants = new THREE.MeshStandardMaterial({ color:0x2b2d42, roughness:0.8 });
+  const hairMat = new THREE.MeshStandardMaterial({ color:cz.hairColor, roughness:0.6 });
   avatarParts.shirtMat = shirt;
+  avatarParts.skinMat = skin;
+  avatarParts.hairMat = hairMat;
 
   const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.36,0.62,12), shirt);
   torso.position.y = 1.05; torso.castShadow = true;
@@ -902,9 +977,48 @@ function buildAvatar(){
   head.position.y = 1.58; head.castShadow = true;
   avatar.add(head);
 
-  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.29,16,16,0,Math.PI*2,0,Math.PI*0.55), new THREE.MeshStandardMaterial({color:0x4a2c19}));
-  hair.position.y = 1.66;
-  avatar.add(hair);
+  // ---- Variações de cabelo (só a escolhida fica visível) ----
+  const hairGroup = new THREE.Group();
+  hairGroup.position.y = 1.58;
+  avatar.add(hairGroup);
+  const hairMeshes = {};
+
+  const curto = new THREE.Mesh(new THREE.SphereGeometry(0.29,16,16,0,Math.PI*2,0,Math.PI*0.55), hairMat);
+  curto.position.y = 0.08;
+  hairGroup.add(curto); hairMeshes.curto = curto;
+
+  const cacheado = new THREE.Group();
+  const puffGeo = new THREE.IcosahedronGeometry(0.13,0);
+  const puffPositions = [[0,0.16,0.14],[0.16,0.12,0.05],[-0.16,0.12,0.05],[0.12,0.1,-0.16],[-0.12,0.1,-0.16],[0,0.22,-0.05],[0.08,0.2,0.1],[-0.08,0.2,0.1]];
+  puffPositions.forEach(p=>{ const puff = new THREE.Mesh(puffGeo, hairMat); puff.position.set(p[0],p[1],p[2]); cacheado.add(puff); });
+  hairGroup.add(cacheado); hairMeshes.cacheado = cacheado;
+
+  const moicano = new THREE.Group();
+  const strip = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.16,0.42), hairMat);
+  strip.position.set(0,0.18,0);
+  moicano.add(strip);
+  const stubble = new THREE.Mesh(new THREE.SphereGeometry(0.285,16,16,0,Math.PI*2,0,Math.PI*0.5), hairMat);
+  stubble.scale.set(1,0.25,1); stubble.position.y=0.02;
+  moicano.add(stubble);
+  hairGroup.add(moicano); hairMeshes.moicano = moicano;
+
+  const careca = new THREE.Group(); // sem cabelo (careca)
+  hairGroup.add(careca); hairMeshes.careca = careca;
+
+  const trancas = new THREE.Group();
+  const cap = new THREE.Mesh(new THREE.SphereGeometry(0.285,16,16,0,Math.PI*2,0,Math.PI*0.5), hairMat);
+  cap.scale.set(1,0.45,1); cap.position.y=0.03;
+  trancas.add(cap);
+  [-1,1].forEach(side=>{
+    const braid = new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.03,0.42,8), hairMat);
+    braid.position.set(side*0.27, -0.14, 0.02);
+    braid.rotation.z = side*0.25;
+    trancas.add(braid);
+  });
+  hairGroup.add(trancas); hairMeshes.trancas = trancas;
+
+  avatarParts.hairGroup = hairGroup;
+  avatarParts.hairMeshes = hairMeshes;
 
   // Olhos simples
   [-0.1,0.1].forEach(dx=>{
@@ -912,6 +1026,19 @@ function buildAvatar(){
     eye.position.set(dx, 1.60, 0.25);
     avatar.add(eye);
   });
+
+  // Cílios (só aparecem no avatar "menina")
+  const lashGroup = new THREE.Group();
+  [-0.145,0.145].forEach(dx=>{
+    const lash = new THREE.Mesh(new THREE.ConeGeometry(0.018,0.07,6), new THREE.MeshBasicMaterial({color:0x1b3a2f}));
+    lash.position.set(dx, 1.645, 0.255);
+    lash.rotation.z = dx<0 ? 0.9 : -0.9;
+    lash.rotation.x = -0.3;
+    lashGroup.add(lash);
+  });
+  lashGroup.visible = false;
+  avatar.add(lashGroup);
+  avatarParts.lashGroup = lashGroup;
 
   const armGeo = new THREE.CylinderGeometry(0.08,0.08,0.55,8);
   const armL = new THREE.Mesh(armGeo, skin); armL.position.set(-0.42,1.05,0); armL.castShadow=true;
@@ -923,11 +1050,70 @@ function buildAvatar(){
   const legR = new THREE.Mesh(legGeo, pants); legR.position.set(0.16,0.42,0); legR.castShadow=true;
   avatar.add(legL, legR);
 
+  // Saia (só aparece no avatar "menina", cobre o quadril usando a cor da roupa)
+  const skirt = new THREE.Mesh(new THREE.ConeGeometry(0.42,0.42,14), shirt);
+  skirt.position.y = 0.82; skirt.castShadow = true; skirt.visible = false;
+  avatar.add(skirt);
+
   avatarParts.torso=torso; avatarParts.head=head; avatarParts.armL=armL; avatarParts.armR=armR;
-  avatarParts.legL=legL; avatarParts.legR=legR;
+  avatarParts.legL=legL; avatarParts.legR=legR; avatarParts.legGeoDefault=legGeo;
+  avatarParts.pantsMat = pants; avatarParts.skirtMesh = skirt;
+
+  applyHairType(cz.hairType);
+  applyBodyType(cz.bodyType || 'menino');
+  buildNameTag();
 
   avatar.position.set(Player.x, 0, Player.z);
   scene.add(avatar);
+}
+
+/* ---- Personalização do avatar ---- */
+function applyBodyType(type){
+  GameState.avatarCustom.bodyType = type;
+  const isMenina = type === 'menina';
+  if(avatarParts.skirtMesh) avatarParts.skirtMesh.visible = isMenina;
+  if(avatarParts.lashGroup) avatarParts.lashGroup.visible = isMenina;
+  if(avatarParts.legL && avatarParts.legR && avatarParts.skinMat && avatarParts.pantsMat){
+    const mat = isMenina ? avatarParts.skinMat : avatarParts.pantsMat;
+    avatarParts.legL.material = mat; avatarParts.legR.material = mat;
+    const scale = isMenina ? 0.82 : 1;
+    avatarParts.legL.scale.set(scale,1,scale); avatarParts.legR.scale.set(scale,1,scale);
+  }
+  saveState();
+}
+function applySkinColor(hex){ GameState.avatarCustom.skin = hex; if(avatarParts.skinMat) avatarParts.skinMat.color.set(hex); saveState(); }
+function applyShirtColor(hex){ GameState.avatarCustom.shirt = hex; if(avatarParts.shirtMat) avatarParts.shirtMat.color.set(hex); saveState(); }
+function applyHairColor(hex){ GameState.avatarCustom.hairColor = hex; if(avatarParts.hairMat) avatarParts.hairMat.color.set(hex); saveState(); }
+function applyHairType(type){
+  GameState.avatarCustom.hairType = type;
+  if(avatarParts.hairMeshes){
+    HAIR_TYPES.forEach(t=>{ avatarParts.hairMeshes[t].visible = (t===type); });
+  }
+  saveState();
+}
+function applyName(name){
+  name = (name||'').trim().slice(0,14) || 'Jogador';
+  GameState.avatarCustom.name = name;
+  buildNameTag();
+  saveState();
+}
+function buildNameTag(){
+  if(avatarParts.nameTag){ avatar.remove(avatarParts.nameTag); }
+  const canvas = document.createElement('canvas');
+  canvas.width = 320; canvas.height = 96;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(20,45,35,0.78)';
+  roundRect(ctx, 4,4,312,88,44); ctx.fill();
+  ctx.font = '800 44px "Baloo 2", Nunito, sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(GameState.avatarCustom.name, 160, 50);
+  const tex = new THREE.CanvasTexture(canvas);
+  const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true }));
+  spr.scale.set(1.05,0.32,1);
+  spr.position.set(0, 2.02, 0);
+  avatar.add(spr);
+  avatarParts.nameTag = spr;
 }
 
 let walkCycle = 0;
@@ -1493,7 +1679,7 @@ function runConfetti(){
 function openModal(id){ document.getElementById(id).classList.add('show'); }
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 function isAnyModalOpen(){
-  return document.querySelectorAll('.modal-overlay.show').length > 0 || document.getElementById('cart-panel').classList.contains('show');
+  return document.querySelectorAll('.modal-overlay.show').length > 0 || document.getElementById('cart-panel').classList.contains('show') || GameState.customizing;
 }
 
 document.querySelectorAll('[data-close]').forEach(btn=>{
@@ -1542,7 +1728,7 @@ function advanceMission(){
 
 function checkUnlocks(){
   if(GameState.wallet>=20 && !GameState.unlocked.cart2){ GameState.unlocked.cart2=true; showToast('🔓 R$20 — Novo carrinho desbloqueado!','info'); }
-  if(GameState.wallet>=40 && !GameState.unlocked.outfit){ GameState.unlocked.outfit=true; avatarParts.shirtMat.color.set(0xff9f1c); showToast('🔓 R$40 — Nova roupa para o avatar!','info'); }
+  if(GameState.wallet>=40 && !GameState.unlocked.outfit){ GameState.unlocked.outfit=true; showToast('🔓 R$40 — Novo brilho para seu avatar!','info'); }
   if(GameState.wallet>=60 && !GameState.unlocked.area){ GameState.unlocked.area=true; showToast('🔓 R$60 — Nova área do supermercado!','info'); }
   if(GameState.wallet>=100 && !GameState.unlocked.special){ GameState.unlocked.special=true; showToast('🔓 R$100 — Missão especial desbloqueada!','info'); }
 }
@@ -1607,14 +1793,113 @@ function startGame(){
 /* ============================== 19. LOOP PRINCIPAL ============================= */
 function animate(){
   requestAnimationFrame(animate);
+  const dt = clock ? Math.min(0.05, clock.getDelta()) : 0.016;
+  if(GameState.customizing){
+    updateAvatarAnimation(dt, false);
+    updateCustomizeCamera(dt);
+    renderer.render(scene, camera);
+    return;
+  }
   if(!GameState.gameStarted){ renderer && renderer.render(scene, camera); return; }
-  const dt = Math.min(0.05, clock.getDelta());
   const moving = moveAvatar(dt);
   updateAvatarAnimation(dt, moving);
   updateCamera();
   updateInteractables(dt);
   drawMinimap();
   renderer.render(scene, camera);
+}
+
+/* ======================= 19b. PERSONALIZAÇÃO (UI + CÂMERA) ===================== */
+let customizeCamAngle = 0.4;
+function updateCustomizeCamera(dt){
+  customizeCamAngle += dt*0.35;
+  const dist = 2.5, pitch = 0.18;
+  const cx = Player.x, cz = Player.z;
+  camera.position.set(
+    cx - Math.sin(customizeCamAngle)*Math.cos(pitch)*dist,
+    1.35 + Math.sin(pitch)*dist,
+    cz - Math.cos(customizeCamAngle)*Math.cos(pitch)*dist
+  );
+  // Desloca só o ponto de mira (não a posição da câmera), pra empurrar o avatar
+  // pra esquerda da tela e ele não ficar escondido atrás do painel de personalização.
+  const rightX = Math.cos(customizeCamAngle), rightZ = -Math.sin(customizeCamAngle);
+  const panOffset = -1.05;
+  camera.lookAt(cx + rightX*panOffset, 1.35, cz + rightZ*panOffset);
+}
+
+const SKIN_COLORS = ['#ffe0bd','#ffd1a6','#f1c27d','#c68642','#8d5524','#5c3a21'];
+const SHIRT_COLORS = ['#3a86ff','#ff9f1c','#ef4444','#2ec4b6','#a855f7','#ffd23f','#111827','#ffffff'];
+const HAIR_COLORS = ['#1b1b1b','#4a2c19','#7a4b21','#d9a066','#e63946','#3a86ff','#ff6fb0','#f4f4f4'];
+const HAIR_LABELS = { curto:'✂️ Curto', cacheado:'🌀 Cacheado', moicano:'🎸 Moicano', careca:'😎 Carequinha', trancas:'🎀 Tranças' };
+
+function initCustomizeUI(){
+  const skinRow = document.getElementById('swatch-skin');
+  SKIN_COLORS.forEach(hex=>{
+    const el = document.createElement('div');
+    el.className = 'swatch'; el.style.background = hex; el.dataset.hex = hex;
+    el.addEventListener('click', ()=>{ applySkinColor(hex); updateCustomizeSelections(); Audio1.click(); });
+    skinRow.appendChild(el);
+  });
+  const shirtRow = document.getElementById('swatch-shirt');
+  SHIRT_COLORS.forEach(hex=>{
+    const el = document.createElement('div');
+    el.className = 'swatch'; el.style.background = hex; el.dataset.hex = hex;
+    if(hex==='#ffffff') el.style.border = '3px solid #ddd';
+    el.addEventListener('click', ()=>{ applyShirtColor(hex); updateCustomizeSelections(); Audio1.click(); });
+    shirtRow.appendChild(el);
+  });
+  const hairColorRow = document.getElementById('swatch-hair');
+  HAIR_COLORS.forEach(hex=>{
+    const el = document.createElement('div');
+    el.className = 'swatch'; el.style.background = hex; el.dataset.hex = hex;
+    el.addEventListener('click', ()=>{ applyHairColor(hex); updateCustomizeSelections(); Audio1.click(); });
+    hairColorRow.appendChild(el);
+  });
+  const hairOptRow = document.getElementById('hair-options');
+  HAIR_TYPES.forEach(type=>{
+    const el = document.createElement('div');
+    el.className = 'hair-opt'; el.textContent = HAIR_LABELS[type]; el.dataset.type = type;
+    el.addEventListener('click', ()=>{ applyHairType(type); updateCustomizeSelections(); Audio1.click(); });
+    hairOptRow.appendChild(el);
+  });
+
+  document.querySelectorAll('#body-options .hair-opt').forEach(el=>{
+    el.addEventListener('click', ()=>{ applyBodyType(el.dataset.body); updateCustomizeSelections(); Audio1.click(); });
+  });
+
+  document.getElementById('custom-name').addEventListener('input', e=>{ applyName(e.target.value); });
+  document.getElementById('btn-customize-done').addEventListener('click', closeCustomize);
+  document.getElementById('btn-customize').addEventListener('click', ()=> openCustomize(true));
+  document.getElementById('btn-customize-ingame').addEventListener('click', ()=> openCustomize(false));
+}
+
+function updateCustomizeSelections(){
+  const cz = GameState.avatarCustom;
+  document.querySelectorAll('#swatch-skin .swatch').forEach(el=> el.classList.toggle('selected', el.dataset.hex===cz.skin));
+  document.querySelectorAll('#swatch-shirt .swatch').forEach(el=> el.classList.toggle('selected', el.dataset.hex===cz.shirt));
+  document.querySelectorAll('#swatch-hair .swatch').forEach(el=> el.classList.toggle('selected', el.dataset.hex===cz.hairColor));
+  document.querySelectorAll('#hair-options .hair-opt').forEach(el=> el.classList.toggle('selected', el.dataset.type===cz.hairType));
+  document.querySelectorAll('#body-options .hair-opt').forEach(el=> el.classList.toggle('selected', el.dataset.body===(cz.bodyType||'menino')));
+}
+
+let customizeCameFromStart = false;
+function openCustomize(fromStart){
+  customizeCameFromStart = fromStart;
+  closeModal('settings-modal');
+  if(fromStart){ document.getElementById('start-screen').style.display = 'none'; }
+  GameState._preCustomizePos = { x:Player.x, z:Player.z };
+  customizeCamAngle = 0.4;
+  GameState.customizing = true;
+  document.getElementById('custom-name').value = GameState.avatarCustom.name;
+  updateCustomizeSelections();
+  document.getElementById('customize-panel').classList.add('show');
+}
+function closeCustomize(){
+  document.getElementById('customize-panel').classList.remove('show');
+  GameState.customizing = false;
+  if(GameState._preCustomizePos){ Player.x = GameState._preCustomizePos.x; Player.z = GameState._preCustomizePos.z; GameState._preCustomizePos = null; }
+  if(customizeCameFromStart){ document.getElementById('start-screen').style.display = 'flex'; }
+  Audio1.click();
 }
 
 /* ============================== 20. INICIALIZAÇÃO ============================= */
@@ -1637,6 +1922,7 @@ function boot(){
   }, 90);
 
   initScene();
+  initCustomizeUI();
   if(IS_MOBILE){ setupMobileControls(); } else { setupDesktopControls(); }
   resetMissionStats();
   updateMissionHUD();
